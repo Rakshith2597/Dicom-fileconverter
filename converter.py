@@ -33,7 +33,7 @@ def uploader():
               name=m[:-4]
               name=name+".czb"
 
-          #return lstfilesDCM[0]
+
 
 
           ds=dicom.read_file(lstfilesDCM[0])
@@ -41,61 +41,40 @@ def uploader():
           pixel_array_numpy = ds.pixel_array  # returns a NumPy array for uncompressed images
           dimensions = ds.pixel_array.shape
 
-          image_type=ds.ImageType
-          image_height=ds.Rows
+
+          image_height=ds.Rows #Extract required data of dicom files
           image_width=ds.Columns
           image_bit=ds.BitsAllocated
           image_pixel=ds.PixelData
+          image_data=(image_height*image_width*image_bit)/8
 
-         
-
-
-
+          #converts data to binary
 
 
-          if (pixel_array_numpy.any()):
-              return "content"
+          width=struct.pack('Q',image_height)
+          height=struct.pack('Q',image_width)
+          bit=struct.pack('B',image_bit)
+          pdata=image_pixel.tobytes()
+          stat=3
+          status=struct.pack('B',stat)
+
+          ident='CRAZY BITMAP    '
+          ide=ident.encode('ASCII')
+
+          #write into file a new file
+
+          new_file=open(name,'wb')
+          new_file.write(ide)
+          new_file.write(status)
+          new_file.write(height)
+          new_file.write(width)
+          new_file.write(bit)
+          new_file.write(pdata)
 
 
+          return new_file
 
 
-
-
-
-
-         # data= np.fromfile(f,dtype=np.uint8)
-         # len=data.ndim
-
-         # return len
-
-
-
-
-
-
-          #return arr
-
-
-
-          #img = Image.open(f1)
-          #arr=np.array(f1)
-          #return arr.shape
-
-          #return arr.shape
-
-          #return np.array(img.getdata(),np.uint8).reshape(img.size[1], img.size[0], 3)
-
-
-
-
-
-
-         # if string=='JFIF':
-
-         # img = img.convert('1')
-         # img = img.tobitmap()
-
-         # return img
 
 
 if __name__ == '__main__':
