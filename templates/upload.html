@@ -1,0 +1,34 @@
+<html>
+<head>
+  <meta charset="utf-8">
+<style type="text/css"> </style>
+<script type="text/javascript" src="{{ url_for('static',filename= 'upl.js')}}" >
+
+</script>
+</head>
+<body>
+
+<div id="upload">
+
+</div>
+
+  <form class="uploader"  name="upload" method="POST" action="http://localhost:5000/uploader" enctype = "multipart/form-data">
+
+    <input type="file" id="file" name="file" onchange="photo()" >
+    <input type="submit" value="Upload">
+
+
+
+
+
+  </form>
+  <div id="res">
+  </div>
+
+  
+
+</body>
+
+
+
+</html>
