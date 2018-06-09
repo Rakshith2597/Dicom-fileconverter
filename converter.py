@@ -44,54 +44,55 @@ def uploader():
 
 
 
-          ds=dicom.read_file('/home/rakshith/Internship/uploads/'+lstfilesDCM[0])
+              ds=dicom.read_file('/home/rakshith/Internship/uploads/'+lstfilesDCM[0])
 
-          pixel_array_numpy = ds.pixel_array  # returns a NumPy array for uncompressed images
-          dimensions = ds.pixel_array.shape
-
-
-          image_height=ds.Rows #Extract required data of dicom files
-          image_width=ds.Columns
-          image_bit=ds.BitsAllocated
-          ds.PixelData=ds.pixel_array
-          image_pixel=ds.PixelData
-          image_data=(image_height*image_width*image_bit)/8
+              pixel_array_numpy = ds.pixel_array  # returns a NumPy array for uncompressed images
+              dimensions = ds.pixel_array.shape
 
 
+              image_height=ds.Rows #Extract required data of dicom files
+              image_width=ds.Columns
+              image_bit=ds.BitsAllocated
+              ds.PixelData=ds.pixel_array
+              image_pixel=ds.PixelData
+              image_data=(image_height*image_width*image_bit)/8
 
-          #converts data to binary
 
 
-          width=struct.pack('Q',image_height)
-          height=struct.pack('Q',image_width)
-          bit=struct.pack('B',image_bit)
-          pdata=image_pixel.tobytes()
-          stat=3
-          status=struct.pack('B',stat)
+              #converts data to binary
 
-          ident='CRAZY BITMAP    '
-          ide=ident.encode('ASCII')
 
-          #write into file a new file
+              width=struct.pack('Q',image_height)
+              height=struct.pack('Q',image_width)
+              bit=struct.pack('B',image_bit)
+              pdata=image_pixel.tobytes()
+              stat=3
+              status=struct.pack('B',stat)
 
-          new_file=open('/home/rakshith/Internship/uploads/'+con_file,'wb')
-          new_file.write(ide)
-          new_file.write(status)
-          new_file.write(height)
-          new_file.write(width)
-          new_file.write(bit)
-          new_file.write(pdata)
+              ident='CRAZY BITMAP    '
+              ide=ident.encode('ASCII')
 
-          f.close()
-          new_file.close()
-         # new_file=open('/home/rakshith/Internship/uploads/'+con_file,'rb')
+              #write into file a new file
 
-          os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+              new_file=open('/home/rakshith/Internship/uploads/'+con_file,'wb')
+              new_file.write(ide)
+              new_file.write(status)
+              new_file.write(height)
+              new_file.write(width)
+              new_file.write(bit)
+              new_file.write(pdata)
 
-          #return send_file(new_file,attachment_filename=name,as_attachment='true')
-         # return render_template('download.html',filename=con_file)
-          return redirect(url_for('downloader',
-                                 filename=con_file))
+              f.close()
+              new_file.close()
+             # new_file=open('/home/rakshith/Internship/uploads/'+con_file,'rb')
+
+              os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+              #return send_file(new_file,attachment_filename=name,as_attachment='true')
+             # return render_template('download.html',filename=con_file)
+              return redirect(url_for('downloader',
+                                     filename=con_file))
+         
 
 
 

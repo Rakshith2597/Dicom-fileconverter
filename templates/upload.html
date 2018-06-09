@@ -5,6 +5,9 @@
 <script type="text/javascript" src="{{ url_for('static',filename= 'upl.js')}}" >
 
 </script>
+
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='up.css') }}">
+
 </head>
 <body>
 
@@ -14,8 +17,8 @@
 
   <form class="uploader"  name="upload" method="POST" action="http://localhost:5000/uploader" enctype = "multipart/form-data">
 
-    <input type="file" id="file" name="file" onchange="photo()" >
-    <input type="submit" name="submit" value="Convert and Download">
+    <input  type="file" id="file" name="file" onchange="photo()" >
+    <input class="w3-button w3-xlarge w3-teal" type="submit" name="submit" value="Convert and Download">
 
 
 
