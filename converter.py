@@ -3,6 +3,7 @@ from flask import Flask,render_template,request,jsonify
 from werkzeug import secure_filename
 import numpy as np
 from PIL import Image
+import struct
 
 import dicom
 
