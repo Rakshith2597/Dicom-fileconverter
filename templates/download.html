@@ -8,7 +8,7 @@
 
 
 <body>
-  <form name="download" method="POST" action="http://localhost:5000/downloader" enctype="multipart/form-data" >
+  <form name="download" method="POST" action="{{url_for(downloader,filename=con_file)}}" enctype="multipart/form-data" >
 
     <input type="submit" value="Download" name="download">
 

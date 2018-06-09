@@ -89,23 +89,23 @@ def uploader():
           os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
           #return send_file(new_file,attachment_filename=name,as_attachment='true')
-         # return render_template('download.html')
+         # return render_template('download.html',filename=con_file)
           return redirect(url_for('downloader',
-                                    filename=con_file))
+                                 filename=con_file))
 
 
 
-@app.route('/downloader',methods=['GET','POST'])
+@app.route('/downloader/<filename>')
 
 def downloader(filename):
+         #return render_template('download.html')
 
-         return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename, as_attachment=True)
+           return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename, as_attachment='True')
 
          #return send_from_directory(new_file,attachment_filename=con_file,as_attachment='true') , 'downloaded'
 
     #os.remove('/home/rakshith/Internship/uploads/'+name)
-
 
 
 
