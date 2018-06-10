@@ -1,30 +1,62 @@
 <html>
 <head>
   <meta charset="utf-8">
-<style type="text/css"> </style>
+
 <script type="text/javascript" src="{{ url_for('static',filename= 'upl.js')}}" >
 
 </script>
 
+<script type="text/javascript" src="{{ url_for('static',filename= 'dropzone.js')}}" >
+
+</script>
+
+
+<!--<script type="text/javascript" src="../static/upl.js">
+</script>
+<script type="text/javascript" src="../static/dropzone.js">
+</script> -->
+
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='up.css') }}">
 
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='dropzone.css') }}">
+<!--<link rel=stylesheet type="text/css" href="../static/up.css" />
+<link rel=stylesheet type="text/css" href="../static/dropzone.css" />
+
+-->
 </head>
 <body>
 
-<div id="upload" alignment="center">
+<div id="##########" alignment="center">
 
 
 
   <form class="uploader"  name="upload" method="POST" action="http://localhost:5000/uploader" enctype = "multipart/form-data">
-
+<div id="upload" alignment="centre">
     <input  type="file" id="file" name="file" onchange="photo()" >
-    <input class="w3-button w3-xlarge w3-teal" type="submit" name="submit" value="Convert and Download">
-
-
-
-
 
   </form>
+
+  <form action="http://localhost:5000/uploader" method="POST" class="dropzone"   id="file" name="file" enctype = "multipart/form-data">
+
+
+
+    </form>
+
+
+
+<!--
+  <div id="myProgress">
+  <div id="myBar"></div>
+</div>
+-->
+
+  <div>
+    <input class="w3-button w3-xlarge w3-teal" type="submit" name="submit" value="Convert and Download">
+
+</div>
+
+
+
   </div>
 
   <div id="res">
