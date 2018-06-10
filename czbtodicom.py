@@ -1,52 +1,89 @@
-import dicom
-import sys
 import numpy as np
+import sys
 import io
-import struct
-import os
-import tempfile
-import datetime
-
+import dicom, dicom.UID
 from dicom.dataset import Dataset, FileDataset
+import datetime, time
+import struct
+import pickle
 
 
-# meta data not available after conversion
-suffix = '.dcm'
-filename_little_endian = tempfile.NamedTemporaryFile(suffix=suffix).name
-filename_big_endian = tempfile.NamedTemporaryFile(suffix=suffix).name
+def writedicom():
+    new_file=open('CT-MONO2-16-brainv1.czb','rb')
+    content=new_file.read()
+
+    filename='CT-MONO2-16-brainv4.dcm'
 
 
-file_meta = Dataset()
-file_meta.MediaStorageSOPClassUID = '1.2.840.10008.5.1.4.1.1.2'
-file_meta.MediaStorageSOPInstanceUID = "1.2.3"
-file_meta.ImplementationClassUID = "1.2.3.4"
 
-ds = FileDataset(filename_little_endian, {},
-                 file_meta=file_meta, preamble=b"\0" * 128)
+    new_file.seek(17)
+    r=new_file.read(8)
+    rows=struct.unpack('Q',r)[0]
+    print(rows)
 
-# Add the data elements -- not trying to set all required here. Check DICOM
-# standard
-ds.PatientName = "Test^Firstname"
-ds.PatientID = "123456"
+    new_file.seek(25)
+    c=new_file.read(8)
+    columns=struct.unpack('Q',c)[0]
 
-# Set the transfer syntax
-ds.is_little_endian = True
-ds.is_implicit_VR = True
 
-# Set creation date/time
-dt = datetime.datetime.now()
-ds.ContentDate = dt.strftime('%Y%m%d')
-timeStr = dt.strftime('%H%M%S.%f')  # long format with micro seconds
-ds.ContentTime = timeStr
-ds.save_as(filename_little_endian)
+    new_file.seek(33)
+    b=new_file.read(1)
+    bpp=struct.unpack('B',b)[0]
 
-ds.file_meta.TransferSyntaxUID = dicom.uid.ExplicitVRBigEndian
-ds.is_little_endian = False
-ds.is_implicit_VR = False
 
-ds.save_as(filename_big_endian)
 
-for filename in (filename_little_endian, filename_big_endian):
-    print('Load file {} ...'.format(filename))
-    ds = pydicom.dcmread(filename)
-    print(ds)
+    new_file.seek(34)
+    pixeldata = new_file.read()
+    print(type(pixeldata))
+
+    # = struct.unpack('H',pixeldata1)
+    #print(pixeldata)
+    #pix=np.fromstring(pixeldata1)
+    #print(pixeldata1)
+    #pixeldata=pix.tostring()
+
+
+
+
+
+    file_meta = Dataset()
+    file_meta.MediaStorageSOPClassUID = 'Secondary Capture Image Storage'
+    file_meta.MediaStorageSOPInstanceUID = '1.3.6.1.4.1.9590.100.1.1.111165684411017669021768385720736873780'
+    file_meta.ImplementationClassUID = '1.3.6.1.4.1.9590.100.1.0.100.4.0'
+    ds = FileDataset(filename, {},file_meta = file_meta,preamble="\0"*128)
+    ds.Modality = 'CT'
+    ds.ContentDate = str(datetime.date.today()).replace('-','')
+    ds.ContentTime = str(time.time()) #milliseconds since the epoch
+    ds.StudyInstanceUID =  '1.3.6.1.4.1.9590.100.1.1.124313977412360175234271287472804872093'
+    ds.SeriesInstanceUID = '1.3.6.1.4.1.9590.100.1.1.369231118011061003403421859172643143649'
+    ds.SOPInstanceUID =    '1.3.6.1.4.1.9590.100.1.1.111165684411017669021768385720736873780'
+    ds.SOPClassUID = 'Secondary Capture Image Storage'
+    ds.SecondaryCaptureDeviceManufctur = 'Python 2.7.3'
+    ds.SamplesPerPixel = 1
+    ds.PhotometricInterpretation = "MONOCHROME2"
+    ds.PixelRepresentation = 1
+    ds.HighBit = 15
+    ds.BitsStored = 16
+    ds.WindowCenter = 50
+    ds.WindowWidth = 75
+    #ADD BITS ALLOCATED
+    ds.BitsAllocated=bpp
+    #ds.SmallestImagePixelValue = '\\x00\\x00'
+    #ds.LargestImagePixelValue = '\\xff\\xff'
+    #ADD ROWS AND COLUMN VALUES
+    #ADD PIXEL ARRAY VALUES
+    ds.Rows=rows
+    ds.Columns=columns
+
+    ds.PixelData = pixeldata
+
+    #ADD FILE NAME AS WELL
+    ds.save_as(filename)
+    return "filesaved"
+
+
+def main():
+    writedicom()
+
+if __name__=='__main__':
+    main()

@@ -10,6 +10,7 @@ import dicom
 from flask_dropzone import Dropzone
 
 
+
 UPLOADED_PATH= '/home/rakshith/Internship/uploads'
 app = Flask(__name__)
 app.config['UPLOADED_PATH'] = UPLOADED_PATH
@@ -61,6 +62,7 @@ def uploader():
 
 
               image_height=ds.Rows #Extract required data of dicom files
+
               image_width=ds.Columns
               image_bit=ds.BitsAllocated
               ds.PixelData=ds.pixel_array
@@ -70,10 +72,11 @@ def uploader():
               #converts data to binary
 
 
-              width=struct.pack('Q',image_height)
-              height=struct.pack('Q',image_width)
+              width=struct.pack('Q',image_width)
+              height=struct.pack('Q',image_height)
               bit=struct.pack('B',image_bit)
               pdata=image_pixel.tobytes()
+              #pdata=pickle.dumps(image_pixel)
               stat=3
               status=struct.pack('B',stat)
 
