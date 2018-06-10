@@ -1,63 +1,66 @@
 <html>
 <head>
   <meta charset="utf-8">
+
+  <!--ADD ALL CSS STYLE-SHEETS -->
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='up.css') }}">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='upload.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='dropzone.css') }}">
+
+  <!--ADD ALL JAVASCRIPTS -->
+
+
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"> </script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"> </script>
-  <script type="text/javascript" src="{{ url_for('static',filename= 'upl.js')}}" > </script>
+  <script src="static/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="static/upl.js" > </script>
   <script type="text/javascript" src="{{ url_for('static',filename= 'upload.js')}}" > </script>
   <script type="text/javascript" src="{{ url_for('static',filename= 'dropzone.js')}}" > </script>
-
-
-
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='up.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='upload.css') }}">
-
-<link rel="stylesheet" href="{{ url_for('static', filename='dropzone.css') }}">
+  <script type="text/javascript" src="{{ url_for('static',filename= 'something.js')}}" > </script>
 
 
 </head>
 <body>
+
   <div class="container">
         <div class="panel panel-default">
-          <div class="panel-heading"><strong>Dicom to czb converter</strong> <small>upload files</small></div>
-
-
+        <div class="panel-heading"><strong>Dicom <==> CRAZY_BITMAP Converter</strong> <small>Upload Files</small> </div>
 
 
 <div class="panel-body">
 
-          <!-- Standar Form -->
+
           <h4>Select files </h4>
 
-  <form  name="upload" method="POST" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
+  <form class="uploadform"  name="upload" method="POST" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
     <div class="form-inline">
                   <div class="form-group">
-  <input  type="file" id="js-upload-files" name="file" onchange="photo()" >
-</div>
+                  <input  type="file" id="js-upload-files" name="file" onchange="photo()" >
+                  </div>
 
  <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
 Convert and Download</button>
 </div>
-<div id="res">
-</div>
+
+
 
   </form>
-
-  <h4>Or drag and drop files below</h4>
-          <div  id="drop-zone">
-            Just drag and drop files here
-            {{ dropzone.create(action_view='uploader') }}
-          </div>
-
-
   <div id="res">
+    File details
   </div>
 
 
 
+  <h4>Or drag and drop files below</h4>
+          <div  id="drop-zone">
+            <form class="dropzone" id="mydropzone" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
+            Just drag and drop files here
+            </form>
+            <!--{{ dropzone.create(action_view='uploader') }} -->
+
+          </div>
+
+
 </body>
-
-
 
 </html>

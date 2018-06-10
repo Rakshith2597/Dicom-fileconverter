@@ -3,7 +3,7 @@
 
 function photo(){
 
-  var pic=document.getElementById('file').files[0];
+  var pic=document.getElementByName('js-upload-files').files[0];
 
   var a='Date ::'+pic.date;
   a+='<br> Name ::'+pic.name;
