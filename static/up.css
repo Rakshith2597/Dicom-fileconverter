@@ -8,13 +8,4 @@
     background-color: green;
 }
 
-.droparea {
-     width: 200px;
-     height: 200px;
-     border-style: solid;
-     border-width: 3px;
-     border-color: red;
-     float: left;
-     line-height: 200px;
-     text-align: center;
-   }
+

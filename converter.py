@@ -2,16 +2,28 @@ from flask import Flask,render_template,request,send_file,send_from_directory,re
 
 from werkzeug import secure_filename
 import numpy as np
-from PIL import Image
+
 import struct
 import os
 
 import dicom
+from flask_dropzone import Dropzone
 
 
-UPLOAD_FOLDER = '/home/rakshith/Internship/uploads'
+UPLOADED_PATH= '/home/rakshith/Internship/uploads'
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOADED_PATH'] = UPLOADED_PATH
+
+app.config.update(
+
+    # Flask-Dropzone config:
+
+    DROPZONE_MAX_FILE_SIZE=30,
+    DROPZONE_MAX_FILES=1,
+)
+
+
+dropzone = Dropzone(app)
 
 con_file=''
 
@@ -23,13 +35,13 @@ def upl():
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
       if request.method == 'POST':
-          f = request.files['file']
+          f = request.files.get('file')
 
           lstfilesDCM=[]  #empty list
 
           #f1=open(secure_filename(f.filename))
           filename=secure_filename(f.filename)
-          f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+          f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
 
 
 
@@ -39,8 +51,6 @@ def uploader():
               name=m[:-4]
               name=name+".czb"
               con_file=name
-
-
 
 
 
@@ -56,8 +66,6 @@ def uploader():
               ds.PixelData=ds.pixel_array
               image_pixel=ds.PixelData
               image_data=(image_height*image_width*image_bit)/8
-
-
 
               #converts data to binary
 
@@ -86,13 +94,19 @@ def uploader():
               new_file.close()
              # new_file=open('/home/rakshith/Internship/uploads/'+con_file,'rb')
 
-              os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+              os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
+
+
+
+              #return send_from_directory(app.config['UPLOADED_PATH'],
+                                #  con_file, as_attachment='True')
 
               #return send_file(new_file,attachment_filename=name,as_attachment='true')
-             # return render_template('download.html',filename=con_file)
+              #return render_template('download.html',filename=con_file)
               return redirect(url_for('downloader',
                                      filename=con_file))
-         
+
+
 
 
 
@@ -101,7 +115,7 @@ def uploader():
 def downloader(filename):
          #return render_template('download.html')
 
-           return send_from_directory(app.config['UPLOAD_FOLDER'],
+           return send_from_directory(app.config['UPLOADED_PATH'],
                                filename, as_attachment='True')
 
          #return send_from_directory(new_file,attachment_filename=con_file,as_attachment='true') , 'downloaded'
