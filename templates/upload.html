@@ -53,10 +53,14 @@ Convert and Download</button>
 
   <h4>Or drag and drop files below</h4>
           <div  id="drop-zone">
-            <form class="dropzone" id="mydropzone" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
+          <form class="dropzone" id="mydropzone" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
             Just drag and drop files here
-            </form>
+          </form> 
             <!--{{ dropzone.create(action_view='uploader') }} -->
+
+          </div>
+          <div>
+            <a href="{{ url_for('downloader') }}" > Click here after uploading </a>
 
           </div>
 

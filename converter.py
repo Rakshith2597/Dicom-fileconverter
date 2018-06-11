@@ -98,9 +98,13 @@ def uploader():
 
 
               os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
+              name_file=open('uploads/name.txt','w')
+              name_file.write(con_file)
+              name_file.close()
 
-              return redirect(url_for('downloader',
-                                     filename=con_file))
+              #return render_template("download.html")
+
+              return redirect(url_for('downloader'))
 
           elif ".czb" in f.filename.lower():
                 lstfilesDCM.append(f.filename) #append is not actually necessary
@@ -174,18 +178,26 @@ def uploader():
 
                 #ADD FILE NAME AS WELL
                 ds.save_as('uploads/'+con_file)
-                return redirect(url_for('downloader',
-                                       filename=con_file))
+
+                name_file=open('uploads/name.txt','w')
+                name_file.write(con_file)
+                name_file.close()
+
+
+                return redirect(url_for('downloader'))
 
 
 
-@app.route('/downloader/<filename>')
+@app.route('/downloader')
 
-def downloader(filename):
+def downloader():
+    name_file=open('uploads/name.txt','rw')
+    conv_name=name_file.readline()
 
+    name_file.close()
 
-           return send_from_directory(app.config['UPLOADED_PATH'],
-                               filename, as_attachment='True')
+    return send_from_directory(app.config['UPLOADED_PATH'],
+                               conv_name, as_attachment='True')
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -193,7 +205,7 @@ def not_found_error(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    
+
     return render_template('500.html'), 500
 
 if __name__ == '__main__':
