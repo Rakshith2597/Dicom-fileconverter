@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,send_file,send_from_directory,redirect,url_for
+from flask import Flask,render_template,request,send_file,send_from_directory,redirect,url_for,flash
 from werkzeug import secure_filename
 import numpy as np
 import struct
@@ -16,7 +16,7 @@ import pylab
 UPLOADED_PATH= '/home/rakshith/Internship/uploads'
 app = Flask(__name__)
 app.config['UPLOADED_PATH'] = UPLOADED_PATH
-
+app.secret_key = 'random string'
 app.config.update(
 
     # Flask-Dropzone config:
@@ -29,6 +29,7 @@ app.config.update(
 dropzone = Dropzone(app)
 
 con_file=''
+
 
 @app.route('/')
 def upl():
@@ -108,9 +109,13 @@ def uploader():
               #return render_template("download.html")
 
               return redirect(url_for('downloader'))
-          else:
 
-              
+          else:
+              flash('Hey! Thats not a .dcm file. Check again')
+              return render_template('upload.html')
+
+
+
 
 @app.route('/downloader')
 
