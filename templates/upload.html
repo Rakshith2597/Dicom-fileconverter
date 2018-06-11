@@ -35,7 +35,8 @@
   <form class="uploadform"  name="upload" method="POST" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
     <div class="form-inline">
                   <div class="form-group">
-                  <input  type="file" id="js-upload-files" name="file" onchange="photo()" >
+                  <input  type="file" id="js-upload-files" name="file" >
+
                   </div>
 
  <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
@@ -45,8 +46,9 @@ Convert and Download</button>
 
 
   </form>
+
   <div id="res">
-    File details
+
   </div>
 
 
@@ -54,8 +56,8 @@ Convert and Download</button>
   <h4>Or drag and drop files below</h4>
           <div  id="drop-zone">
           <form class="dropzone" id="mydropzone" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
-            Just drag and drop files here
-          </form> 
+
+          </form>
             <!--{{ dropzone.create(action_view='uploader') }} -->
 
           </div>
@@ -64,6 +66,10 @@ Convert and Download</button>
 
           </div>
 
+          <div>
+            <a href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm?? Download our simple python script</a>
+
+          </div>
 </body>
 
 </html>

@@ -7,44 +7,28 @@ import datetime, time
 import struct
 import pickle
 
+""" PYTHON SCRIPT TO CONVERT CZB FILE TO DICOM FILE """
 
 def writedicom():
-    new_file=open('CT-MONO2-16-brainv1.czb','rb')
+    new_file=open('CT-MONO2-16-brainv1.czb','rb') #SPECIFY THE INPUT FILENAME
+
     content=new_file.read()
 
-    filename='CT-MONO2-16-brainv4.dcm'
-
-
+    filename='CT-MONO2-16-brainv4.dcm'  #SPECIFY THE OUTPUT FILE NAME
 
     new_file.seek(17)
     r=new_file.read(8)
     rows=struct.unpack('Q',r)[0]
-    print(rows)
-
     new_file.seek(25)
     c=new_file.read(8)
     columns=struct.unpack('Q',c)[0]
-
-
     new_file.seek(33)
     b=new_file.read(1)
     bpp=struct.unpack('B',b)[0]
-
-
-
     new_file.seek(34)
     pixeldata = new_file.read()
-    print(type(pixeldata))
 
-    # = struct.unpack('H',pixeldata1)
-    #print(pixeldata)
-    #pix=np.fromstring(pixeldata1)
-    #print(pixeldata1)
-    #pixeldata=pix.tostring()
-
-
-
-
+    #ADDITIONAL DATA REQUIRED IN DICOM FILENAME
 
     file_meta = Dataset()
     file_meta.MediaStorageSOPClassUID = 'Secondary Capture Image Storage'
@@ -66,21 +50,12 @@ def writedicom():
     ds.BitsStored = 16
     ds.WindowCenter = 50
     ds.WindowWidth = 75
-    #ADD BITS ALLOCATED
     ds.BitsAllocated=bpp
-    #ds.SmallestImagePixelValue = '\\x00\\x00'
-    #ds.LargestImagePixelValue = '\\xff\\xff'
-    #ADD ROWS AND COLUMN VALUES
-    #ADD PIXEL ARRAY VALUES
     ds.Rows=rows
     ds.Columns=columns
-
     ds.PixelData = pixeldata
-
-    #ADD FILE NAME AS WELL
-    ds.save_as(filename)
+    ds.save_as(filename) #DICOM FILE IS SAVED IN THE DIRECTORY WITH THE GIVEN FILE NAME
     return "filesaved"
-
 
 def main():
     writedicom()

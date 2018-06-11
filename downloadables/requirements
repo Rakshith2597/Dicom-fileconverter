@@ -1,0 +1,15 @@
+===Users must have the following installed===
+
+1.numpy
+2.dicom
+3.dicom.dataset
+
+=======================================================
+
+The file to be converted to dicom should be in the same direcory as  the script unless the location is explicitly specified as the file name in the script.
+
+The resulting file will also be saved in the same the diectory as the script unless it is specified.
+
+
+
+

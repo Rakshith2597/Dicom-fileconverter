@@ -4,6 +4,8 @@ import numpy as np
 import io
 import struct
 import pickle
+import Image
+import pylab
 
 def extracting():
     ds = dicom.read_file("CT-MONO2-16-brain.dcm")
@@ -27,7 +29,7 @@ def extracting():
     image_pixel=ds.PixelData
 
     img_pix = image_pixel.tobytes()
-    print(ds.WindowWidth)
+
     #print(img_pix)
 
     #print type(image_pixel[0][0])
@@ -54,13 +56,16 @@ def extracting():
     ide=ident.encode('ASCII')
 
     #write into files remaining
-    new_file=open('/home/rakshith/Internship/uploads'+ name,'wb')
+    new_file=open('/home/rakshith/Internship/uploads'+'CT-MONO2-16-brain.czb','wb')
     new_file.write(ide)
     new_file.write(status)
     new_file.write(height)
     new_file.write(width)
     new_file.write(bit)
     new_file.write(pdata)
+
+    pylab.imshow(ds.pixel_array,cmap=pylab.cm.bone) # pylab readings and conversion
+    pylab.show()
 
 
 
