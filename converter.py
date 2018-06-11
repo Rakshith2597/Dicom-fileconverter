@@ -17,12 +17,15 @@ UPLOADED_PATH= '/home/rakshith/Internship/uploads'
 app = Flask(__name__)
 app.config['UPLOADED_PATH'] = UPLOADED_PATH
 app.secret_key = 'random string'
+
+app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.dcm'
 app.config.update(
 
     # Flask-Dropzone config:
 
     DROPZONE_MAX_FILE_SIZE=30,
-    DROPZONE_MAX_FILES=1,
+    DROPZONE_ALLOWED_FILE_TYPE='.dcm',
+    DROPZONE_MAX_FILES=1
 )
 
 
@@ -96,6 +99,7 @@ def uploader():
 
 
               new_file.close()
+              f.close()
 
 
               os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
@@ -120,10 +124,11 @@ def uploader():
 @app.route('/downloader')
 
 def downloader():
-    name_file=open('uploads/name.txt','rw')
+    name_file=open('uploads/name.txt','rw+')
     conv_name=name_file.readline()
 
     name_file.close()
+    #os.remove(os.path.join(app.config['UPLOADED_PATH'],'name.txt' ))
 
 
     return send_from_directory(app.config['UPLOADED_PATH'],conv_name, as_attachment='True')

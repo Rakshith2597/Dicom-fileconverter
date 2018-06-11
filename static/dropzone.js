@@ -320,7 +320,7 @@ var Dropzone = function (_Emitter) {
          * or an array of those. In that case, all of those elements will trigger an
          * upload when clicked.
          */
-        clickable: true,
+        clickable: false,
 
         /**
          * Whether hidden files in directories should be ignored.
@@ -338,7 +338,7 @@ var Dropzone = function (_Emitter) {
          * [`accept`](https://developer.mozilla.org/en-US/docs/HTML/Element/input#attr-accept)
          * parameter on the hidden file input as well.
          */
-        acceptedFiles: null,
+        acceptedFiles: 'application/dicom',
 
         /**
          * **Deprecated!**
@@ -419,7 +419,7 @@ var Dropzone = function (_Emitter) {
         /**
          * The text used before any files are dropped.
          */
-        dictDefaultMessage: "Drop files here to upload",
+        dictDefaultMessage: "Drop files here to convert and click link below to download",
 
         /**
          * The text that replaces the default message text it the browser is not supported.
