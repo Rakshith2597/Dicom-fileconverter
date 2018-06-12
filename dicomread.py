@@ -19,6 +19,10 @@ def extracting():
     ds.PixelData = ds.pixel_array
     ss=ds.PatientName
 
+    tt=ds.ImageType
+    print tt
+
+
 
 
     image_height=ds.Rows

@@ -11,13 +11,11 @@ import Image
 import pylab
 
 
-
-
 UPLOADED_PATH= '/home/rakshith/Internship/uploads'
 app = Flask(__name__)
 app.config['UPLOADED_PATH'] = UPLOADED_PATH
 app.secret_key = 'random string'
-
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.dcm'
 app.config.update(
 
@@ -112,7 +110,8 @@ def uploader():
 
               #return render_template("download.html")
 
-              return redirect(url_for('downloader'))
+
+              return redirect(url_for('downloader',filename=con_file))
 
           else:
               flash('Hey! Thats not a .dcm file. Check again')
@@ -124,14 +123,18 @@ def uploader():
 @app.route('/downloader')
 
 def downloader():
-    name_file=open('uploads/name.txt','rw+')
+    name_file=open('uploads/name.txt','r')
     conv_name=name_file.readline()
 
     name_file.close()
+
+
     #os.remove(os.path.join(app.config['UPLOADED_PATH'],'name.txt' ))
 
 
     return send_from_directory(app.config['UPLOADED_PATH'],conv_name, as_attachment='True')
+
+
 
 @app.route('/script_download')
 
@@ -142,13 +145,11 @@ def script_download():
 
 
 
-
-
-
-
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
+
+
 
 @app.errorhandler(500)
 def internal_error(error):

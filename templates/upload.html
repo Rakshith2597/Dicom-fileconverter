@@ -13,7 +13,7 @@
 
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"> </script>
   <script src="static/jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="static/upl.js" > </script>
+  <script src="{{ url_for('static',filename= 'upla.js')}}" type="text/javascript"> </script>
   <script type="text/javascript" src="{{ url_for('static',filename= 'upload.js')}}" > </script>
   <script type="text/javascript" src="{{ url_for('static',filename= 'dropzone.js')}}" > </script>
   <script type="text/javascript" src="{{ url_for('static',filename= 'something.js')}}" > </script>
@@ -44,31 +44,31 @@
 
   <form class="uploadform"  name="upload" method="POST" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
     <div class="form-inline">
-                  <div class="form-group">
-                  <input  type="file" id="js-upload-files" name="file" >
+    <div class="form-group">
+          <input  type="file" id="file" name="file" onchange="photo()">
+          <div id="res">
+            file detailss
+          </div>
+          <div>
+          <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
 
-                  </div>
+          Convert and Download</button> </div>
 
- <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
-Convert and Download</button>
-</div>
+          </div>
 
-
-
-  </form>
-
-  <div id="res">
 
   </div>
 
 
+
+  </form>
 
   <h4>Or drag and drop files below</h4>
           <div  id="drop-zone">
           <form class="dropzone" id="mydropzone" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
 
           </form>
-            <!--{{ dropzone.create(action_view='uploader') }} -->
+            <!--{{ dropzone.create(action_view='uploader') }}   js-upload-files-->
 
           </div>
           <div>
@@ -80,6 +80,9 @@ Convert and Download</button>
             <a href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm?? Download our simple python script</a>
 
           </div>
+
+
+
 </body>
 
 </html>
