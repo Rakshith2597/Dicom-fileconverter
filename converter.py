@@ -11,12 +11,13 @@ import Image
 import pylab
 
 
+
 UPLOADED_PATH= '/home/rakshith/Internship/uploads'
 app = Flask(__name__)
 app.config['UPLOADED_PATH'] = UPLOADED_PATH
 app.secret_key = 'random string'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.dcm'
+#app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.dcm'
 app.config.update(
 
     # Flask-Dropzone config:
@@ -105,7 +106,8 @@ def uploader():
               name_file.close()
 
               pylab.imshow(ds.pixel_array,cmap=pylab.cm.bone) # pylab readings and conversion
-              ab=pylab.savefig("static/img_rgb.png"  )
+              pylab.savefig("static/img_rgb.png"  )
+              pylab.show()
 
               #return render_template("download.html")
 
