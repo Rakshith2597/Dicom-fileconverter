@@ -31,7 +31,6 @@ dropzone = Dropzone(app)
 
 con_file=''
 
-
 @app.route('/')
 def upl():
     return render_template('upload.html')
