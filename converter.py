@@ -7,8 +7,7 @@ import dicom, dicom.UID
 from dicom.dataset import Dataset, FileDataset
 import datetime, time
 from flask_dropzone import Dropzone
-import Image
-import pylab
+
 
 
 
@@ -105,9 +104,7 @@ def uploader():
               name_file.write(con_file)
               name_file.close()
 
-              pylab.imshow(ds.pixel_array,cmap=pylab.cm.bone) # pylab readings and conversion
-              pylab.savefig("static/img_rgb.png"  )
-              pylab.show()
+
 
               #return render_template("download.html")
 
