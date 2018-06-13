@@ -57,9 +57,9 @@
   {% endif %}
 
 {% endwith %}
-          <h4>Select files </h4>
+
 <table>
-  <td>
+  <td><h4>Select files </h4>
   <form class="uploadform"  name="upload" method="POST" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
     <div class="form-inline">
     <div class="form-group">
@@ -180,7 +180,7 @@
                           loaded = true;
                       }
                     }, function(err) {
-                        alert(err);
+                        alert("Seems like uploaded the wrong file");
                     });
                   }
                   cornerstone.events.addEventListener('cornerstoneimageloadprogress', function(event) {
