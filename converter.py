@@ -100,6 +100,7 @@ def uploader():
 
 
               os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
+              #flash(con_file)
               name_file=open('uploads/name.txt','w')
               name_file.write(con_file)
               name_file.close()
@@ -109,10 +110,10 @@ def uploader():
               #return render_template("download.html")
 
 
-              return redirect(url_for('downloader',filename=con_file))
+              return redirect(url_for('downloader'))
 
           else:
-              flash('Hey! Thats not a .dcm file. Check again')
+
               return render_template('upload.html')
 
 

@@ -46,17 +46,12 @@
 
 <div class="panel-body">
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <script>
-      var messages = {{ messages | safe }};
-      for (var i=0; i<messages.length; i++) {
-        alert(messages[i]);
-      }
-    </script>
-  {% endif %}
+{% with con_name = get_flashed_messages()[0] %}
+
+
 
 {% endwith %}
+
 
 <table>
   <td><h4>Select files </h4>
