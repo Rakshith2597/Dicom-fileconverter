@@ -33,7 +33,7 @@ def uploader():
           name_file=open('uploads/name.txt','r')
           conv_name=name_file.readline()
           name_file.close()
-          
+
           if ".dcm" in conv_name.lower():
               encoder(conv_name)
               return redirect(url_for('downloader'))
@@ -47,6 +47,7 @@ def uploader():
 def downloader():
     conv_name=download()
     os.remove('/home/rakshith/Internship/static/dicom.png')
+    #os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
     return send_from_directory(app.config['UPLOADED_PATH'],conv_name, as_attachment='True')
 
 

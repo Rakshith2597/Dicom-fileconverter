@@ -1,7 +1,6 @@
 
 from base import *
-from download import *
-#from converter import downloader
+
 conv_name=''
 
 def encoder(conv_name):
