@@ -7,6 +7,9 @@ import dicom, dicom.UID
 from dicom.dataset import Dataset, FileDataset
 import datetime, time
 from flask_dropzone import Dropzone
+import PIL as pillow
+from PIL import Image
+from PIL.Image import fromarray
 
 
 
@@ -35,22 +38,41 @@ con_file=''
 def upl():
     return render_template('upload.html')
 
+@app.route('/upload', methods=['GET','POST'])
+
+def upload():
+    if request.method == 'POST':
+        f = request.files.get('file')
+
+        lstfilesDCM=[]  #empty list
+
+        #f1=open(secure_filename(f.filename))
+        filename=secure_filename(f.filename)
+        f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
+        name_file=open('uploads/name.txt','w')
+        name_file.write(filename)
+        name_file.close()
+
+        f.close()
+
+        return redirect(url_for('preview'))
+
+
+
+
 
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
       if request.method == 'POST':
-          f = request.files.get('file')
+          name_file=open('uploads/name.txt','r')
+          conv_name=name_file.readline()
+
+          name_file.close()
 
           lstfilesDCM=[]  #empty list
 
-          #f1=open(secure_filename(f.filename))
-          filename=secure_filename(f.filename)
-          f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
-
-
-
-          if ".dcm" in f.filename.lower():
-              lstfilesDCM.append(f.filename) #append is not actually necessary
+          if ".dcm" in conv_name.lower():
+              lstfilesDCM.append(conv_name) #append is not actually necessary
               m=lstfilesDCM[0] #used list to create multiple files uploader later
               name=m[:-4]
               name=name+".czb"
@@ -68,6 +90,8 @@ def uploader():
               image_bit=ds.BitsAllocated
               ds.PixelData=ds.pixel_array
               image_pixel=ds.PixelData
+
+
 
 
               #converts data to binary
@@ -96,10 +120,10 @@ def uploader():
 
 
               new_file.close()
-              f.close()
+              #f.close()
 
 
-              os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
+              os.remove(os.path.join(app.config['UPLOADED_PATH'], conv_name))
               #flash(con_file)
               name_file=open('uploads/name.txt','w')
               name_file.write(con_file)
@@ -128,7 +152,7 @@ def downloader():
     name_file.close()
 
 
-    #os.remove(os.path.join(app.config['UPLOADED_PATH'],'name.txt' ))
+    os.remove('/home/rakshith/Internship/static/dicom.png')
 
 
     return send_from_directory(app.config['UPLOADED_PATH'],conv_name, as_attachment='True')
@@ -140,6 +164,38 @@ def downloader():
 def script_download():
 
     return send_from_directory('/home/rakshith/Internship/downloadables','czb_to_dcm_script.tar.gz', as_attachment='True')
+
+
+
+@app.route('/preview',methods=['GET','POST'])
+def preview():
+
+    name_file=open('uploads/name.txt','r')
+    file_name=name_file.readline()
+
+    name_file.close()
+
+    ds=dicom.read_file('uploads/'+file_name)
+    im = fromarray(ds.pixel_array).convert("L")  ## Saving preview image
+    im.save('static/dicom.png')
+
+    return redirect(url_for('loop'))
+
+
+@app.route('/loop',methods=['GET','POST'])
+
+def loop():
+    full_filename = '/home/rakshith/Internship/static/dicom.png'
+    return render_template("upload.html", user_image = full_filename)
+
+
+
+
+
+
+
+
+
 
 
 

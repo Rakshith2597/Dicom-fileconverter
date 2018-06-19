@@ -46,11 +46,6 @@
 
 <div class="panel-body">
 
-{% with con_name = get_flashed_messages()[0] %}
-
-
-
-{% endwith %}
 
 
 <table>
@@ -60,12 +55,42 @@
     <div class="form-group">
       <table>
         <td>
-          <input  type="file" id="file" name="file" onchange="photo()">
+          <input  type="file" id="file" name="file" >
+          <td>
+
+
+          <div>
           <div id="res">
+            <div class="col-md-6">
+
+
+
+            <div style="width:100px;height:100px;position:relative;color: white;"
+                 oncontextmenu="return false"
+                 class='disable-selection noIbar'
+                 unselectable='on'
+                 onselectstart='return false;'
+                 onmousedown='return false;'>
+                 <div id="dicomImage"
+                      style="width:100px;height:100px;top:13px;left:0px; position:relative">
+
+                 </div>
+                 </div>
+
+                   <!--{{ dropzone.create(action_view='uploader') }}   js-upload-files-->
+
+                 </div>
 
           </div>
+
           <td>
-          <div>
+            <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload" formaction="{{ url_for('upload') }}">
+
+            Upload</button>
+
+          <td>
+            <td>
+
           <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
 
           Convert and Download</button> </div>
@@ -75,45 +100,41 @@
 
   </div>
 </table>
- <td>
-   <td>
+
 
   </form>
   <td>
-  <div class="col-md-6">
+  <td>
+    <td>
+    <img src="{{url_for('static', filename='dicom.png')}}" height="250px" width="250px" alt="No files uploaded">
 
-      <div style="width:250px;height:250px;position:relative;color: white;"
-           oncontextmenu="return false"
-           class='disable-selection noIbar'
-           unselectable='on'
-           onselectstart='return false;'
-           onmousedown='return false;'>
-           <div id="dicomImage"
-                style="width:250px;height:250px;top:0px;left:-3px; position:relative">
 
-           </div>
-
-             <!--{{ dropzone.create(action_view='uploader') }}   js-upload-files-->
-
-           </div>
-      </div>
   </div>
+
+
 </table>
-  <h4>Or drag and drop files below</h4>
-  <div  id="drop-zone">
-  <form class="dropzone" id="mydropzone" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
 
-  </form>
+<h4>Or drag and drop files below</h4>
+<div  id="drop-zone">
+<form class="dropzone" id="mydropzone" action="{{ url_for('upload') }}" enctype = "multipart/form-data">
 
-          <div>
-            <a href="{{ url_for('downloader') }}" > Click here after uploading </a>
+</form>
 
-          </div>
 
-          <div>
-            <a href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm?? Download our simple python script</a>
+<div>
+  <a href="{{ url_for('preview') }}" > CLICK HERE TO UPLOAD THE FILES </a>
 
-          </div>
+</div>
+
+
+  <footer>
+    <div>
+      <a href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm?? Download our simple python script</a>
+
+    </div>
+
+
+  </footer>
 
           <script>
               cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
