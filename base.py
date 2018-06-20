@@ -10,7 +10,7 @@ from flask_dropzone import Dropzone
 import PIL as pillow
 from PIL import Image
 from PIL.Image import fromarray
-
+from flask_assets import Bundle,Environment
 
 
 UPLOADED_PATH= '/home/rakshith/Internship/uploads'
@@ -29,6 +29,14 @@ app.config.update(
 )
 
 
+js=Bundle('jquery.min.js','upla.js','dropzone.js','something.js','cornerstone.min.js',
+'cornerstoneMath.min.js','cornerstoneTools.min.js','dicomParser.min.js','cornerstoneWADOImageLoader.js',
+'uids.js','initializeWebWorkers.js',output='gen/main.js')
+
+css=Bundle('up.css','dropzone.css','bootstrap.min.css','cornerstone.min.css',output='gen/main.css')
+assets=Environment(app)
+assets.register('main_js',js)
+assets.register('main_css',css)
 
 dropzone = Dropzone(app)
 
