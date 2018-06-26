@@ -1,5 +1,5 @@
 from base import *
-from encoder import *
+from Model_Encoder import *
 
 
 @app.route('/')
@@ -46,7 +46,7 @@ def uploader():
 
 def downloader():
     conv_name=download()
-    os.remove('/home/rakshith/Internship/static/dicom.png')
+    os.remove('/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png')
     #os.remove(os.path.join(app.config['UPLOADED_PATH'], filename))
     return send_from_directory(app.config['UPLOADED_PATH'],conv_name, as_attachment='True')
 
@@ -56,7 +56,7 @@ def downloader():
 
 def script_download():
 
-    return send_from_directory('/home/rakshith/Internship/downloadables','czb_to_dcm_script.tar.gz', as_attachment='True')
+    return send_from_directory('/home/rakshith/dicom_converter/Dicom-fileconverter/downloadables','czb_to_dcm_script.tar.gz', as_attachment='True')
 
 
 
@@ -68,7 +68,7 @@ def preview():
 
     name_file.close()
 
-    ds=dicom.read_file('uploads/'+file_name)
+    ds=pydicom.read_file('uploads/'+file_name)
     im = fromarray(ds.pixel_array).convert("L")  ## Saving preview image
     im.save('static/dicom.png')
 
@@ -78,7 +78,7 @@ def preview():
 @app.route('/loop',methods=['GET','POST'])
 
 def loop():
-    full_filename = '/home/rakshith/Internship/static/dicom.png'
+    full_filename = '/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png'
     return render_template("upload.html", user_image = full_filename)
 
 

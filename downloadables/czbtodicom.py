@@ -1,8 +1,9 @@
 import numpy as np
 import sys
 import io
-import dicom, dicom.UID
-from dicom.dataset import Dataset, FileDataset
+import pydicom
+from pydicom._uid_dict import UID_dictionary
+from pydicom.dataset import Dataset, FileDataset
 import datetime, time
 import struct
 import pickle
@@ -10,7 +11,7 @@ import pickle
 """ PYTHON SCRIPT TO CONVERT CZB FILE TO DICOM FILE """
 
 def writedicom():
-    new_file=open('CT-MONO2-16-brainv1.czb','rb') #SPECIFY THE INPUT FILENAME
+    new_file=open('CT-MONO2-16-brain.czb','rb') #SPECIFY THE INPUT FILENAME
 
     content=new_file.read()
 
@@ -27,6 +28,8 @@ def writedicom():
     bpp=struct.unpack('B',b)[0]
     new_file.seek(34)
     pixeldata = new_file.read()
+    pdata=np.array(pixeldata,dtype=np.uint8)
+    #pdata.reshape(w,h)
 
     #ADDITIONAL DATA REQUIRED IN DICOM FILENAME
 
@@ -53,7 +56,8 @@ def writedicom():
     ds.BitsAllocated=bpp
     ds.Rows=rows
     ds.Columns=columns
-    ds.PixelData = pixeldata
+    ds.PixelData = pdata
+    print ds.PixelData
     ds.save_as(filename) #DICOM FILE IS SAVED IN THE DIRECTORY WITH THE GIVEN FILE NAME
     return "filesaved"
 
