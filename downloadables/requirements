@@ -3,12 +3,24 @@
 1.numpy
 2.dicom
 3.dicom.dataset
+4.pydicom
+5.pytorch
+6.PIL
+7.bitstring
 
 =======================================================
 
-The file to be converted to dicom should be in the same direcory as  the script unless the location is explicitly specified as the file name in the script.
++ The czb file(compressed file) should be in the same directory where Model_Decoder.py and Train1_Dream_8.pt is located. If not the specific address should be specified.
 
-The resulting file will also be saved in the same the diectory as the script unless it is specified.
++ A png file of the image is also produced which is optional can be commented out.
+
++ If there are irregularties in the decompressed dicom file. Check the values marked in the script with the ones in the actual file.
+	*Note-The pixel values are always preserved. To confirm could 		      check the png file saved. Irregularties occur due to 		      some custom specification of the dicom file uploaded for 		      compression.
+ 
+
+
+
+
 
 
 

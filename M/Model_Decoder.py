@@ -143,6 +143,7 @@ def changer():
 
     imgfile = imgfile[int(w1/2):int(w1/2)+w,int(h1/2):int(h1/2)+h]
     #print "length of ",len(imgfile)
+	
 #SAVING PNG OF THE IMAGE (OPTIONAL)
     im = fromarray(imgfile).convert("L")  ## Saving preview image
     im.save('dicom.png')
