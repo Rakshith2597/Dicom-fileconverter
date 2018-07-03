@@ -1,14 +1,14 @@
-import dicom
+import pydicom
 import sys
 import numpy as np
 import io
 import struct
 import pickle
-import Image
-import pylab
+#import Image
+#import pylab
 
 def extracting():
-    ds = dicom.read_file("CT-MONO2-16-brain.dcm")
+    ds = pydicom.read_file("000135.dcm")
 
 
 
@@ -21,6 +21,40 @@ def extracting():
 
     tt=ds.ImageType
     print tt
+    print ds.Modality
+    print ds.SamplesPerPixel
+    print ds.PhotometricInterpretation
+    print ds.PixelRepresentation
+    print ds.HighBit
+    print ds.BitsStored
+    print ds.WindowCenter
+    print ds.BitsAllocated
+    print ds.RescaleIntercept
+    print ds.RescaleSlope
+    print ds.RescaleType
+
+    #print ds.SmallestImagePixelValue Rescale Intercept                   DS: "0"
+   
+    print ds.PixelPaddingValue
+    print ds.is_decompressed
+    print ds.is_original_encoding
+    #print ds.elements
+    print ds.file_meta.TransferSyntaxUID
+    print ds.is_little_endian
+    print ds.is_implicit_VR
+    print ds.PixelSpacing
+    print ds.PixelAspectRatio
+    print len(ds.PixelData)
+    #print ds.SmallestImagePixelValue
+    #Pixel Spacing                       DS: ['0.0700', '0.0700']
+#(0028, 0034) Pixel Aspect Ratio                  IS: ['180', '180']
+
+
+
+
+
+
+
 
 
 
@@ -48,8 +82,8 @@ def extracting():
     #print height
     bit=struct.pack('B',image_bit)
     #pdata=struct.pack('H',image_pixel)
-    #pdata=image_pixel.tobytes()
-    pdata = pickle.dumps(image_pixel)
+    pdata=image_pixel.tobytes()
+    #pdata = pickle.dumps(image_pixel)
     #print(pdata)
     #print(type(pdata))
     #print pdata
@@ -60,7 +94,7 @@ def extracting():
     ide=ident.encode('ASCII')
 
     #write into files remaining
-    new_file=open('/home/rakshith/Internship/uploads'+'CT-MONO2-16-brain.czb','wb')
+    new_file=open('newfile.czb','wb')
     new_file.write(ide)
     new_file.write(status)
     new_file.write(height)
@@ -68,8 +102,8 @@ def extracting():
     new_file.write(bit)
     new_file.write(pdata)
 
-    pylab.imshow(ds.pixel_array,cmap=pylab.cm.bone) # pylab readings and conversion
-    pylab.show()
+    #pylab.imshow(ds.pixel_array,cmap=pylab.cm.bone) # pylab readings and conversion
+    #pylab.show()
 
 
 

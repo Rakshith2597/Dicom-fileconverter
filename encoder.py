@@ -1,5 +1,6 @@
 
 from base import *
+from Model_Encoder import *
 
 conv_name=''
 
@@ -11,7 +12,7 @@ def encoder(conv_name):
               name=name+".czb"
               con_file=name
 
-              ds=dicom.read_file('uploads/'+lstfilesDCM[0]) #Read the dicom file
+              ds=pydicom.read_file('uploads/'+lstfilesDCM[0]) #Read the dicom file
 
               pixel_array_numpy = ds.pixel_array  # returns a NumPy array for uncompressed images
               dimensions = ds.pixel_array.shape
@@ -23,8 +24,9 @@ def encoder(conv_name):
               image_bit=ds.BitsAllocated
               ds.PixelData=ds.pixel_array
               image_pixel=ds.PixelData
-
-
+              q, w=image_pixel.shape
+              print q,w
+              print image_pixel
 
 
               #converts data to binary

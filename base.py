@@ -3,17 +3,16 @@ from werkzeug import secure_filename
 import numpy as np
 import struct
 import os
-import dicom, dicom.UID
-from dicom.dataset import Dataset, FileDataset
+import pydicom
+from pydicom.dataset import Dataset, FileDataset
 import datetime, time
 from flask_dropzone import Dropzone
-import PIL as pillow
-from PIL import Image
+
 from PIL.Image import fromarray
 from flask_assets import Bundle,Environment
 
 
-UPLOADED_PATH= '/home/rakshith/Internship/uploads'
+UPLOADED_PATH= '/home/rakshith/dicom_converter/Dicom-fileconverter/uploads'
 app = Flask(__name__)
 app.config['UPLOADED_PATH'] = UPLOADED_PATH
 app.secret_key = 'random string'
