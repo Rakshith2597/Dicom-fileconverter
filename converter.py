@@ -69,7 +69,22 @@ def preview():
     name_file.close()
 
     ds=pydicom.read_file('uploads/'+file_name)
-    im = fromarray(ds.pixel_array).convert("L")  ## Saving preview image
+    arr=ds.pixel_array
+    print np.amin(ds.pixel_array),"min"
+    #arr = torch.unsqueeze(torch.from_numpy(arr.astype(float)),0).float()
+
+    max=np.amax(arr)
+    #min=np.amin(arr)
+    if max==4095:
+
+        arr = arr/(max+0.0)
+        arr=arr*255.0
+    #arr=torch.round((arr.clamp(0.0,1.0))*(255.0))
+    #arr = arr.numpy().astype(np.uint16)
+    #
+    #print "max",np.amax(arr)
+
+    im = fromarray(arr).convert("L")  ## Saving preview image
     im.save('static/dicom.png')
 
     return redirect(url_for('loop'))

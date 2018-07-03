@@ -149,8 +149,8 @@ def encoder(conv_name):
 	status=struct.pack('B',stat)
 	ident='CRAZY BITMAP    '
 	ide=ident.encode('ASCII')
-	width=struct.pack('Q',q)
-	height=struct.pack('Q',e)
+	width=struct.pack('Q',w)
+	height=struct.pack('Q',h)
 	image_bit=8
 	bit=struct.pack('B',image_bit)
 	new_file=open('uploads/'+con_file,'wb')

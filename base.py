@@ -7,8 +7,7 @@ import pydicom
 from pydicom.dataset import Dataset, FileDataset
 import datetime, time
 from flask_dropzone import Dropzone
-import PIL as pillow
-from PIL import Image
+
 from PIL.Image import fromarray
 from flask_assets import Bundle,Environment
 

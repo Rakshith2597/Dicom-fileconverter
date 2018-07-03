@@ -10,10 +10,17 @@ from torchvision import datasets,transforms
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import dicom, dicom.UID
+import pydicom
+from dicom.dataset import Dataset, FileDataset
+import matplotlib.pyplot as plt
+
 import cv2
-import time
+from PIL.Image import fromarray
+
 import numpy as np
 from bitstring import Bits
+import datetime, time
 
 
 class ClipReLU1(Function):
@@ -91,15 +98,15 @@ class autoencoder(nn.Module):
 	    return x
 
 def changer():
-    net = torch.load('Train1_Dream_8.pt')
+    net = torch.load('Train1_Dream_8.pt') #LOAD THE REQUIRED MODEL
     decoder = net.module.decoder
 
     new_file=open('000135.czb','rb') #SPECIFY THE INPUT FILENAME
 
-    #content=new_file.read()
 
     filename='conv.dcm'  #SPECIFY THE OUTPUT FILE NAME
 
+#READING THE REQUIRED CHARACTERS
     new_file.seek(17)
     rows=new_file.read(8)
     h=struct.unpack('Q',rows)[0]
@@ -111,26 +118,16 @@ def changer():
     b=struct.unpack('B',bpp)[0]
     new_file.seek(34)
     img = new_file.read()
-    print w,h
-    #print img
-    #tp=struct.unpack('Q',img)
+    #print w,h
+#CONVERTING TO THE VALUES WITH THE PADDING
+    wn=(int(np.floor(w/16)) + 1)*16
+    hn=(int(np.floor(h/16)) + 1)*16
+
     imgfile=np.fromstring(img,sep='',dtype=np.uint8)
-    #side = int(np.sqrt(len(imgfile)))
-    #imgfile=np.array(tp)
-    #imgfile = np.pad(imgfile, ((int(w1/2),w1-int(w1/2)),(int(h1/2),h1-int(h1/2))), 'constant', constant_values=0)
 
-    print imgfile.shape,"the shape of the array"
-    imgfile=imgfile.reshape((8,w/16,h/16))
-    print imgfile.shape,"the shape of the array"
-    # #print imgfile
-    # print imgfile.ndim
-	#
-    # print "The numpy array is ",imgfile
+    imgfile=imgfile.reshape((8,wn/16,hn/16))
 
 
-
-	# Load bit data and convert into 8 bit data in a numpy array
-	# Load w,h
     w1 = (int(np.floor(w/16)) + 1)*16 - w
     h1 = (int(np.floor(h/16)) + 1)*16 - h
 
@@ -145,19 +142,37 @@ def changer():
     imgfile = imgfile.numpy().astype(np.uint16)
 
     imgfile = imgfile[int(w1/2):int(w1/2)+w,int(h1/2):int(h1/2)+h]
+    #print "length of ",len(imgfile)
+#SAVING PNG OF THE IMAGE (OPTIONAL)
+    im = fromarray(imgfile).convert("L")  ## Saving preview image
+    im.save('dicom.png')
 
-#######################$$$$$$$$$$$$$$$$$$$$$$#########################
+    imgdata=imgfile.tostring()
+
+#WRITING THE DICOM FILE
     file_meta = Dataset()
     file_meta.MediaStorageSOPClassUID = 'Secondary Capture Image Storage'
     file_meta.MediaStorageSOPInstanceUID = '1.3.6.1.4.1.9590.100.1.1.111165684411017669021768385720736873780'
     file_meta.ImplementationClassUID = '1.3.6.1.4.1.9590.100.1.0.100.4.0'
     ds = FileDataset(filename, {},file_meta = file_meta,preamble="\0"*128)
-    #ds.BitsAllocated=bpp
-    ds.Rows=rows
-    ds.Columns=columns
-    ds.PixelData = imgfile
+#INCASE OF IRREGULARTIES FROM ACTUAL IMAGE CHECK THESE VALUES WITH ACTUAL FILE
+    ds.Modality = 'MG'
+    ds.SamplesPerPixel = 1
+    ds.PhotometricInterpretation = "MONOCHROME2"
+    ds.PixelRepresentation = 0
+    ds.HighBit = 11
+    ds.BitsStored = 12
+    ds.WindowCenter = 128
+    ds.WindowWidth = 256
+    ds.BitsAllocated= 16
+
+    ds.Rows=w
+
+    ds.Columns=h
+
+    ds.PixelData=imgdata
     ds.save_as(filename)
-    return "file saved"
+    print "file saved"
 
 
 def main():
@@ -165,6 +180,3 @@ def main():
 
 if __name__=='__main__':
     main()
-
-
-	 # save imagefile
