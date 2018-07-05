@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,send_file,send_from_directory,redirect,url_for,flash
+from flask import Flask,render_template,request,send_file,send_from_directory,redirect,url_for,flash,after_this_request
 from werkzeug import secure_filename
 import numpy as np
 import struct
@@ -7,7 +7,7 @@ import pydicom
 from pydicom.dataset import Dataset, FileDataset
 import datetime, time
 from flask_dropzone import Dropzone
-
+from flask_sqlalchemy import SQLAlchemy
 from PIL.Image import fromarray
 from flask_assets import Bundle,Environment
 

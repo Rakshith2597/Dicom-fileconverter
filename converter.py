@@ -1,11 +1,24 @@
 from base import *
 from Model_Encoder import *
 
+###############################################################
+#LINK TO DATABASE (NOT YET USED) COULD BE USED IN FUTURE
+# app.config['SQLALCHEMY_DATABASE_URI']='sqlite://///home/rakshith/dicom_converter/Dicom-fileconverter/uploads/filestorage.db'
+# db=SQLAlchemy(app)
+#
+# class filecontents(db.Model):
+#     id=db.Column(db.Integer,primary_key=True)
+#     name=db.Column(db.String(300))
+#     data=db.column(db.LargeBinary)
+################################################################
 
+global name
+name=''
 @app.route('/')
 def upl():
     return render_template('upload.html')
 
+#UPLOAD.HTML IS THE BASIC HOMEPAGE OF APP
 
 @app.route('/upload', methods=['GET','POST'])
 
@@ -13,14 +26,14 @@ def upload():
     if request.method == 'POST':
         f = request.files.get('file')
 
-        lstfilesDCM=[]  #empty list
+        lstfilesDCM=[]  #empty list(ext:COULD BE USED TO HANDLE MULTIPLE FILES)
 
 
         filename=secure_filename(f.filename)
+
         f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
-        name_file=open('uploads/name.txt','w')
-        name_file.write(filename)
-        name_file.close()
+        global name
+        name=filename
 
         f.close()
 
@@ -31,12 +44,21 @@ def upload():
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
       if request.method == 'POST':
-          name_file=open('uploads/name.txt','r')
-          conv_name=name_file.readline()
-          name_file.close()
+
+          conv_name=name
 
           if ".dcm" in conv_name.lower():
-              encoder(conv_name)
+              encoder(conv_name) #COMPRESSION
+
+              @after_this_request
+              def remove_file(response):
+                  try:
+                      os.remove(app.config['UPLOADED_PATH']+'/'+conv_name)
+                      #file_handle.close()
+                  except Exception as error:
+                      app.logger.error("Error removing or closing downloaded file handle", error)
+                  return response
+
               return redirect(url_for('downloader'))
 
           else:
@@ -46,10 +68,20 @@ def uploader():
 @app.route('/downloader')
 
 def downloader():
-    conv_name=download()
-    os.remove('/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png')
+    conv_name=name[:-3]+'czb'
 
-    return send_from_directory(app.config['UPLOADED_PATH'],conv_name, as_attachment='True')
+    os.remove('/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png')
+    file_handle = open(app.config['UPLOADED_PATH']+'/'+conv_name, 'r')
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(app.config['UPLOADED_PATH']+'/'+conv_name)
+            #file_handle.close()
+        except Exception as error:
+            app.logger.error("Error removing or closing downloaded file handle", error)
+        return response
+
+    return send_file(file_handle, as_attachment='True',attachment_filename=conv_name)
 
 
 
@@ -60,16 +92,12 @@ def script_download():
     return send_from_directory('/home/rakshith/dicom_converter/Dicom-fileconverter/downloadables','czb_to_dcm.tar.gz', as_attachment='True')
 
 
-
+#USED TO GENERATE PNG PREVIEW IMAGE AFTER UPLOADING
 @app.route('/preview',methods=['GET','POST'])
 def preview():
 
-    name_file=open('uploads/name.txt','r')
-    file_name=name_file.readline()
 
-    name_file.close()
-
-    ds=pydicom.read_file('uploads/'+file_name)
+    ds=pydicom.read_file('uploads/'+name)
     arr=ds.pixel_array
 
 
@@ -89,6 +117,7 @@ def preview():
 
 @app.route('/loop',methods=['GET','POST'])
 
+#BACK TO HOMEPAGE WITH PNG
 def loop():
     full_filename = '/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png'
     return render_template("upload.html", user_image = full_filename)

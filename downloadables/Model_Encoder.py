@@ -10,11 +10,12 @@ from torchvision import datasets,transforms
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import cv2
 import time
 import numpy as np
 import pydicom
 from bitstring import Bits
-# from base import *
+from base import *
 
 
 class ClipReLU1(Function):
@@ -92,7 +93,7 @@ class autoencoder(nn.Module):
 	    return x
 
 def encoder(conv_name):
-	net = torch.load('Train1_Dream_8.pt')
+	net = torch.load('M/Train1_Dream_8.pt')
 	encoder = net.module.encoder
 
 	###############$$$$$$$$$$$$$################################
@@ -100,14 +101,14 @@ def encoder(conv_name):
 	lstfilesDCM.append(conv_name) #append is not actually necessary
 	m=lstfilesDCM[0] #used list to create multiple files uploader later
 	name=m[:-4]
-	con_file=name+'.czb'
-
+	name=name+".czb"
+	con_file=name
 
 	image=pydicom.read_file('uploads/'+lstfilesDCM[0])
 	imgfile = pydicom.read_file('uploads/'+lstfilesDCM[0]).pixel_array # Load Image Numpy Format
 	###################################################
 	w, h = imgfile.shape
-	print('the first shape is',w,h)
+	print "the first shape is",w,h
 
 	#########$$$$$$$$$############
 	image_height=image.Rows #Extract required data of dicom files
@@ -121,50 +122,61 @@ def encoder(conv_name):
 	print(imgfile.shape)
 	q,e=imgfile.shape
 
+
+
+
 	imgfile = torch.unsqueeze(torch.unsqueeze(torch.from_numpy(imgfile.astype(float)),0).float(),0)
 	imgfile = imgfile/4095.0
 	imgfile = encoder(Variable(imgfile))
-	# encoding is DONE
 
-	# print(imgfile.size())
+	#print "the shape is",q,e,len(imgfile)
 
-	def get_pdata( imgfile ):
-		# get 'pdata' from imgfile
-		imgfile = imgfile.data
-		imgfile = imgfile[0]
 
-		imgfile = torch.round((imgfile.clamp(0.0,1.0))*(255.0))
-		imgfile = imgfile.numpy().astype(np.uint8)
-		imgfile = imgfile.flatten()
-		b = Bits().join(Bits(uint=x, length=8) for x in imgfile) # Save b (bit data) with a header [8,w,h]
 
-		pdata = b.tobytes()
-		return pdata
+	imgfile = imgfile.data
+	imgfile = imgfile[0]
 
-	# print(len(pdata))
+	imgfile = torch.round((imgfile.clamp(0.0,1.0))*(255.0))
+	imgfile = imgfile.numpy().astype(np.uint8)
+	imgfile = imgfile.flatten()
+	b = Bits().join(Bits(uint=x, length=8) for x in imgfile) # Save b (bit data) with a header [8,w,h]
+
+	pdata=b.tobytes()
+	print len(pdata)
 
 	#########$$$$$$$$$$$#############
-	def write_czb(pdata, w_orig, h_orig, cbz_file_name):
-		stat=3
-		status=struct.pack('B',stat)
-		ident='CRAZY BITMAP    '
-		ide=ident.encode('ASCII')
-		width=struct.pack('Q',w_orig)
-		height=struct.pack('Q',h_orig)
-		image_bit=8
-		bit=struct.pack('B',image_bit)
-		new_file=open('uploads/'+cbz_file_name, 'wb')
-		new_file.write(ide)
-		new_file.write(status)
-		new_file.write(height)
-		new_file.write(width)
-		new_file.write(bit)
-		new_file.write(pdata)
-		new_file.close()
-
-	pdata_ = get_pdata(imgfile)
-	write_czb(pdata_, w, h, con_file)
+	stat=3
+	status=struct.pack('B',stat)
+	ident='CRAZY BITMAP    '
+	ide=ident.encode('ASCII')
+	width=struct.pack('Q',w)
+	height=struct.pack('Q',h)
+	image_bit=8
+	bit=struct.pack('B',image_bit)
+	new_file=open('uploads/'+con_file,'wb')
+	new_file.write(ide)
+	new_file.write(status)
+	new_file.write(height)
+	new_file.write(width)
+	new_file.write(bit)
+	new_file.write(pdata)
 
 
-if __name__ == '__main__':
-	encoder()
+	new_file.close()
+
+
+	#flash(con_file)
+#
+# 	name_file=open('uploads/name.txt','w')
+# 	name_file.write(con_file)
+# 	name_file.close()
+#
+# 	download()
+#
+# def download():
+# 	name_file=open('uploads/name.txt','r')
+# 	conv_name=name_file.readline()
+#
+# 	name_file.close()
+#
+# 	return conv_name
