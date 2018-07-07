@@ -18,59 +18,57 @@ name=''
 def upl():
     return render_template('upload.html')
 
-#UPLOAD.HTML IS THE BASIC HOMEPAGE OF APP
-
-@app.route('/upload', methods=['GET','POST'])
-
-def upload():
-    if request.method == 'POST':
-        f = request.files.get('file')
-
-        lstfilesDCM=[]  #empty list(ext:COULD BE USED TO HANDLE MULTIPLE FILES)
-
-
-        filename=secure_filename(f.filename)
-
-        f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
-        global name
-        name=filename
-
-        f.close()
-
-        return redirect(url_for('preview'))
-
-
-
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
       if request.method == 'POST':
+          f = request.files.get('file')
 
-          conv_name=name
+          lstfilesDCM=[]  #empty list(ext:COULD BE USED TO HANDLE MULTIPLE FILES)
 
-          if ".dcm" in conv_name.lower():
-              encoder(conv_name) #COMPRESSION
+
+          filename=secure_filename(f.filename)
+
+          f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
+          global name
+          name=filename
+
+          f.close()
+
+
+          if ".dcm" in filename.lower():
+              # ds=pydicom.read_file('uploads/'+filename)
+              # arr=ds.pixel_array
+              # max=np.amax(arr)
+              #
+              # if max==4095:
+              #     arr = arr/(max+0.0)
+              #     arr=arr*255.0
+              #
+              # im = fromarray(arr).convert("L")  ## Saving preview image
+              # im.save('static/dicom.png')
+              encoder(filename) #COMPRESSION
 
               @after_this_request
               def remove_file(response):
                   try:
-                      os.remove(app.config['UPLOADED_PATH']+'/'+conv_name)
+                      os.remove(app.config['UPLOADED_PATH']+'/'+filename)
                       #file_handle.close()
                   except Exception as error:
                       app.logger.error("Error removing or closing downloaded file handle", error)
                   return response
 
-              return redirect(url_for('downloader'))
+              return redirect(url_for('preview'))
 
           else:
               return render_template('upload.html')
 
 
-@app.route('/downloader')
+@app.route('/downloader',methods=['GET' , 'POST'])
 
 def downloader():
     conv_name=name[:-3]+'czb'
 
-    os.remove('/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png')
+    #os.remove('/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png')
     file_handle = open(app.config['UPLOADED_PATH']+'/'+conv_name, 'r')
     @after_this_request
     def remove_file(response):
@@ -92,36 +90,17 @@ def script_download():
     return send_from_directory('/home/rakshith/dicom_converter/Dicom-fileconverter/downloadables','czb_to_dcm.tar.gz', as_attachment='True')
 
 
-#USED TO GENERATE PNG PREVIEW IMAGE AFTER UPLOADING
+#
+# @app.route('/loop',methods=['GET','POST'])
+#
+# #BACK TO HOMEPAGE WITH PNG
+# def loop():
+#     full_filename = '/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png'
+#     return redirect(url_for('preview'))
+
 @app.route('/preview',methods=['GET','POST'])
 def preview():
-
-
-    ds=pydicom.read_file('uploads/'+name)
-    arr=ds.pixel_array
-
-
-    max=np.amax(arr)
-
-    if max==4095:
-
-        arr = arr/(max+0.0)
-        arr=arr*255.0
-
-
-    im = fromarray(arr).convert("L")  ## Saving preview image
-    im.save('static/dicom.png')
-
-    return redirect(url_for('loop'))
-
-
-@app.route('/loop',methods=['GET','POST'])
-
-#BACK TO HOMEPAGE WITH PNG
-def loop():
-    full_filename = '/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png'
-    return render_template("upload.html", user_image = full_filename)
-
+    return render_template("upload.html")
 
 
 

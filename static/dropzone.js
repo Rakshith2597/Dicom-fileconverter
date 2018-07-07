@@ -320,7 +320,7 @@ var Dropzone = function (_Emitter) {
          * or an array of those. In that case, all of those elements will trigger an
          * upload when clicked.
          */
-        clickable: false,
+        clickable: true,
 
         /**
          * Whether hidden files in directories should be ignored.
@@ -419,7 +419,7 @@ var Dropzone = function (_Emitter) {
         /**
          * The text used before any files are dropped.
          */
-        dictDefaultMessage: "Drop files here to convert and click link below to download",
+        dictDefaultMessage: "Drop your files here or click here to select",
 
         /**
          * The text that replaces the default message text it the browser is not supported.
@@ -940,10 +940,24 @@ var Dropzone = function (_Emitter) {
 
         // When the complete upload is finished and successful
         // Receives `file`
-        success: function success(file) {
+        success: function success(file) {//Enables the download button 
+          var fileName = 1;
+
+          if(fileName==1) { // returns true if the string is not empty
+
+              $("#js-upload-submit").removeAttr('disabled');
+              $("#js-upload-submit").css({
+                "cursor": "pointer",
+                "box-shadow": "1px 0px 6px #333"
+              });
+          } else {
+              alert("no file selected");
+          }
           if (file.previewElement) {
             return file.previewElement.classList.add("dz-success");
           }
+
+
         },
         successmultiple: function successmultiple() {},
 

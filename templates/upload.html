@@ -1,6 +1,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <!--<meta http-equiv="refresh" content="22" > -->
 
   <!--ADD ALL CSS STYLE-SHEETS -->
 
@@ -8,7 +9,7 @@
   {% assets "main_css" %}
 
   <link rel=stylesheet type=text/css href="{{ASSET_URL}}">
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
   {%endassets%}
 
   <!--ADD ALL JAVASCRIPTS ##BUNDLED INTO ONE FILE-->
@@ -16,6 +17,7 @@
   {% assets "main_js" %}
 
   <script type="text/javascript" src="{{ASSET_URL}}" > </script>
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="q35o4p01rr1byor"></script>
 
   {%endassets%}
 
@@ -32,98 +34,128 @@
 
 
 
-<table>
-<td><h4>Select files </h4>
-<form class="uploadform"  name="upload" method="POST" action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
-    <div class="form-inline" style="border:dotted">
-    <div class="form-group" >
-        <table>
 
-          <div class="new-group" >
-
-        <td>
-          <input  type="file" id="file" name="file" >
-
-            <td>
-              <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload" formaction="{{ url_for('upload') }}">
-
-              Upload</button>
-
-            <td>
-</div>
-          <div>
-          <div id="res">
-            <div class="col-md-6">
-
-            <div style="width:100px;height:100px;position:relative;color: white;"
-                 oncontextmenu="return false"
-                 class='disable-selection noIbar'
-                 unselectable='on'
-                 onselectstart='return false;'
-                 onmousedown='return false;'>
-                 <div id="dicomImage"
-                      style="width:100px;height:100px;top:13px;left:0px; position:relative">
-
-                 </div>
-                 </div>
-
-                   <!--{{ dropzone.create(action_view='uploader') }}   js-upload-files-->
-
-                 </div>
-
-          </div>
-
-
-
-            <td>
-
-         </div>
-
-          </div>
-
-
-  </div>
-</table>
-
-
-  </form>
-  <button  type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
-
-  Convert and Download</button>
-  <td>
-  <td>
-    <td>
-    <img src="{{url_for('static', filename='dicom.png')}}" height="250px" width="250px" alt="No files uploaded" style="position:relative;left:10px">
-
-
-  </div>
-
-
-</table>
-
-<h4>Or drag and drop files below</h4>
 <div  id="drop-zone">
-<form class="dropzone" id="mydropzone" action="{{ url_for('upload') }}" enctype = "multipart/form-data">
+
+<form class="dropzone dz-clickable" id="mydropzone" name='file' action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
+<span>
+
+<i id="auth" class="fab fa-dropbox" onclick="Dropbox.choose(options)">Dropbox</i> </g>
+
+</span>
+
+<span>
+<br/>
+<br/>
+<i id="pick" class="fab fa-google-drive" onclick="newPicker()">Google Drive</i>
+
+</span>
+
+
+    <div id="result"></div>
+
+
 
 </form>
+<script>
+
+//var button = Dropbox.createChooseButton(options);
+//var button = Dropbox.choose(options);
+//document.getElementById("container").appendChild(button)
 
 
-<div>
-  <a href="{{ url_for('preview') }}" > CLICK HERE TO UPLOAD THE FILES </a>
+options = {
+
+    // Required. Called when a user selects an item in the Chooser.
+    success: function(files) {
+        alert("Here's the file link: "+ files[0].link )
+    },
+
+    // Optional. Called when the user closes the dialog without selecting a file
+    // and does not include any parameters.
+    cancel: function() {
+
+    },
+
+    // Optional. "preview" (default) is a preview link to the document for sharing,
+    // "direct" is an expiring link to download the contents of the file. For more
+    // information about link types, see Link types below.
+    linkType: "direct", // or "preview"
+
+    // Optional. A value of false (default) limits selection to a single file, while
+    // true enables multiple file selection.
+    multiselect: false, // or true
+
+    // Optional. This is a list of file extensions. If specified, the user will
+    // only be able to select files with these extensions. You may also specify
+    // file types, such as "video" or "images" in the list. For more information,
+    // see File types below. By default, all extensions are allowed.
+    extensions: ['.dcm'],
+
+    // Optional. A value of false (default) limits selection to files,
+    // while true allows the user to select both folders and files.
+    // You cannot specify `linkType: "direct"` when using `folderselect: true`.
+    folderselect: false, // or true
+};
+
+
+
+</script>
+
+
+	<script src="static/filepicker.js"></script>
+	<script>
+		function initPicker() {
+			var picker = new FilePicker({
+				apiKey: 'AIzaSyDTpfIEYydGLzzhKRrm41LaqFssZLiqsjU',
+				clientId:'358327259908-80kme5hvb18pajeh2ujtb727cue6fc87.apps.googleusercontent.com',
+				buttonEl: document.getElementById('pick'),
+				onSelect: function(file) {
+					console.log(file);
+					alert('Selected ' + file.downloadUrl);
+				}
+			});
+		}
+	</script>
+
+	<script src="https://www.google.com/jsapi?key=AIzaSyDTpfIEYydGLzzhKRrm41LaqFssZLiqsjU"></script>
+<script src="https://apis.google.com/js/client.js?onload=initPicker"></script>
+
+
+
+
+</script>
+
+<form class="uploadform"  name="upload" method="POST" action="{{ url_for('downloader') }}" enctype = "multipart/form-data">
+
+  </div>
+
+<button disabled type="submit"  name="submit" class="btn btn-sm btn-primary" id="js-upload-submit">
+
+Download</button>
+
+  </form>
+
+  <!--  <img src="{{url_for('static', filename='dicom.png')}}" height="250px" width="250px" alt="No files uploaded" style="position:relative;left:10px">
+
 
 </div>
+-->
+<script>
+
+</script>
 
 
   <footer>
     <div>
-      <a href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm?? Download our simple python script</a>
+      <a href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm? Download our simple python script</a>
 
     </div>
 
 
   </footer>
 
-          <script>
+          <script>/*
               cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 
               // this function gets called once the user drops the file onto the div
@@ -202,7 +234,7 @@
                       const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
                       loadAndViewImage(imageId);
                   });
-
+*/
               </script>
 
 
