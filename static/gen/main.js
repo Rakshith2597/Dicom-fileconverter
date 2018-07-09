@@ -971,11 +971,11 @@ var Dropzone = function (_Emitter) {
 
         // When the complete upload is finished and successful
         // Receives `file`
-        success: function success(file) {//Enables the download button 
+        success: function success(file) {//Enables the download button
           var fileName = 1;
 
           if(fileName==1) { // returns true if the string is not empty
-
+              
               $("#js-upload-submit").removeAttr('disabled');
               $("#js-upload-submit").css({
                 "cursor": "pointer",

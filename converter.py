@@ -1,6 +1,8 @@
 from base import *
 from Model_Encoder import *
-
+import urllib
+import wget
+import urlparse
 ###############################################################
 #LINK TO DATABASE (NOT YET USED) COULD BE USED IN FUTURE
 # app.config['SQLALCHEMY_DATABASE_URI']='sqlite://///home/rakshith/dicom_converter/Dicom-fileconverter/uploads/filestorage.db'
@@ -12,6 +14,13 @@ from Model_Encoder import *
 #     data=db.column(db.LargeBinary)
 ################################################################
 
+proxies = {
+      'http': 'http://172.16.2.30:5000',
+      'https': 'http://172.16.2.30:5000',
+    }
+
+
+
 global name
 name=''
 @app.route('/')
@@ -20,32 +29,53 @@ def upl():
 
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
+      def generate():
+
+        yield "data:" + str(x) + "\n\n"
+
       if request.method == 'POST':
-          f = request.files.get('file')
+
+          url_dict = request.get_json()
+
+
+
+
+
+
+          if url_dict:
+              url=url_dict.get('link')
+              # a = urlparse.urlparse(url)
+              # a=a.path
+              # filename=os.path.basename(a.path)
+              filename = url.split("/")[-1]
+              #
+              # wget.download(url,'uploads/'+filename)
+              r = requests.get(url)
+              with open('uploads/'+filename,'wb') as f:
+
+                  f.write(r.content)
+                  f.close()
+
+
+
+          else:
+              f = request.files.get('file')
+              filename=secure_filename(f.filename)
+              f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
+              f.close()
+
 
           lstfilesDCM=[]  #empty list(ext:COULD BE USED TO HANDLE MULTIPLE FILES)
 
 
-          filename=secure_filename(f.filename)
-
-          f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
           global name
           name=filename
 
-          f.close()
+
 
 
           if ".dcm" in filename.lower():
-              # ds=pydicom.read_file('uploads/'+filename)
-              # arr=ds.pixel_array
-              # max=np.amax(arr)
-              #
-              # if max==4095:
-              #     arr = arr/(max+0.0)
-              #     arr=arr*255.0
-              #
-              # im = fromarray(arr).convert("L")  ## Saving preview image
-              # im.save('static/dicom.png')
+
               encoder(filename) #COMPRESSION
 
               @after_this_request
@@ -56,8 +86,9 @@ def uploader():
                   except Exception as error:
                       app.logger.error("Error removing or closing downloaded file handle", error)
                   return response
+              x={'key':'success'}
 
-              return redirect(url_for('preview'))
+              return jsonify(x)
 
           else:
               return render_template('upload.html')
@@ -81,6 +112,14 @@ def downloader():
 
     return send_file(file_handle, as_attachment='True',attachment_filename=conv_name)
 
+@app.route('/saver',methods=['POST'])
+
+def saver():
+    if request.method == 'POST':
+        url = request.get_json()
+        print url
+    return '', 200
+
 
 
 @app.route('/script_download')
@@ -100,7 +139,8 @@ def script_download():
 
 @app.route('/preview',methods=['GET','POST'])
 def preview():
-    return render_template("upload.html")
+
+    return render_template('upload.html')
 
 
 
@@ -109,6 +149,17 @@ def preview():
 def not_found_error(error):
     return render_template('404.html'), 404
 
+# @app.route('/progress')
+# def progress():
+#     def generate():
+# 		x = 0
+#
+# 		while x <= 100:
+# 			yield "data:" + str(x) + "\n\n"
+# 			x = x + 10
+# 			time.sleep(0.5)
+#
+#     return Response(generate(), mimetype= 'text/event-stream')
 
 
 @app.errorhandler(500)

@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,send_file,send_from_directory,redirect,url_for,flash,after_this_request
+from flask import Flask,render_template,request,send_file,send_from_directory,redirect,url_for,flash,after_this_request,jsonify, Response
 from werkzeug import secure_filename
 import numpy as np
 import struct
@@ -11,6 +11,8 @@ from flask_sqlalchemy import SQLAlchemy
 from PIL.Image import fromarray
 from flask_assets import Bundle,Environment
 import dropbox
+import requests
+from dropbox import *
 # from flask_dropbox import blueprint
 
 
@@ -30,7 +32,7 @@ app.config.update(
     DROPZONE_ALLOWED_FILE_TYPE='.dcm',
     DROPZONE_MAX_FILES=1,
     #
-    # SECRET_KEY = 'poilkjmnb',
+    SECRET_KEY = 'poilkjmnb',
     # DROPBOX_KEY = 'q35o4p01rr1byor',
     # DROPBOX_SECRET = 'u3qy0hch1usdy8t',
     # DROPBOX_ACCESS_TYPE = 'dropbox'
