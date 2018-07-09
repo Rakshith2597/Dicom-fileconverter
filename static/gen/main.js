@@ -975,12 +975,12 @@ var Dropzone = function (_Emitter) {
           var fileName = 1;
 
           if(fileName==1) { // returns true if the string is not empty
-              
-              $("#js-upload-submit").removeAttr('disabled');
-              $("#js-upload-submit").css({
-                "cursor": "pointer",
-                "box-shadow": "1px 0px 6px #333"
-              });
+
+              // $("#js-upload-submit").removeAttr('disabled');
+              // $("#js-upload-submit").css({
+              //   "cursor": "pointer",
+              //   "box-shadow": "1px 0px 6px #333"
+              // });
           } else {
               alert("no file selected");
           }

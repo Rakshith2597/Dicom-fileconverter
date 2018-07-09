@@ -1,8 +1,11 @@
 from base import *
-from Model_Encoder import *
-import urllib
+#from Model_Encoder import *
+from flask_socketio import SocketIO,send
+from server import *
+
 import wget
-import urlparse
+
+import paramiko
 ###############################################################
 #LINK TO DATABASE (NOT YET USED) COULD BE USED IN FUTURE
 # app.config['SQLALCHEMY_DATABASE_URI']='sqlite://///home/rakshith/dicom_converter/Dicom-fileconverter/uploads/filestorage.db'
@@ -18,6 +21,7 @@ proxies = {
       'http': 'http://172.16.2.30:5000',
       'https': 'http://172.16.2.30:5000',
     }
+socketio= SocketIO(app)
 
 
 
@@ -29,15 +33,17 @@ def upl():
 
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
-      def generate():
 
-        yield "data:" + str(x) + "\n\n"
+
 
       if request.method == 'POST':
 
+
+
           url_dict = request.get_json()
 
-
+          socketio.send('Intializing===')
+          socketio.sleep(0)
 
 
 
@@ -70,13 +76,42 @@ def uploader():
 
           global name
           name=filename
+          socketio.send('====>FileRecived=====')
+          socketio.sleep(0)
 
 
 
 
           if ".dcm" in filename.lower():
+              SCRIPT_DIR = '/home/miriad1c/compression/'
 
-              encoder(filename) #COMPRESSION
+              src_fold = os.path.abspath('/home/rakshith/dicom_converter/Dicom-fileconverter/uploads/')
+              dcm_file = filename
+              dest_fold = SCRIPT_DIR # <- don't change
+
+              if os.path.exists(os.path.join(src_fold, dcm_file)):
+                  client = copy_to_and_from(None,
+                    credential_dict = {'hostname': '10.9.7.9','username': 'miriad1c','password': 'sipiitkgp'},
+                    src_dcm_file = os.path.join(src_fold, dcm_file),
+                    dest_dcm_file = os.path.join(dest_fold, dcm_file)
+                    )
+
+        #Switching to send progress to Client
+                  socketio.send('====>Compressing=====')
+                  socketio.sleep(0)
+        #Back to Intial socket
+
+                  run_compression(client, dcm_file)
+                  client = copy_to_and_from(client,
+                    src_dcm_file = os.path.join(src_fold, dcm_file.split('.')[0] + '.czb'),
+                    dest_dcm_file = os.path.join(dest_fold, dcm_file.split('.')[0] + '.czb'),
+                    to = False,
+                    end_conn_on_finish = True)
+
+                  if client is None:
+                      print('connection ended')
+        # encoder(filename) #COMPRESSION
+
 
               @after_this_request
               def remove_file(response):
@@ -87,6 +122,15 @@ def uploader():
                       app.logger.error("Error removing or closing downloaded file handle", error)
                   return response
               x={'key':'success'}
+
+
+              socketio.send('====>Compressed=====')
+              socketio.sleep(0)
+              socketio.send('===>Click Download Button=====>')
+              socketio.sleep(0)
+
+
+
 
               return jsonify(x)
 
@@ -151,15 +195,15 @@ def not_found_error(error):
 
 # @app.route('/progress')
 # def progress():
-#     def generate():
-# 		x = 0
-#
-# 		while x <= 100:
-# 			yield "data:" + str(x) + "\n\n"
-# 			x = x + 10
-# 			time.sleep(0.5)
-#
-#     return Response(generate(), mimetype= 'text/event-stream')
+    # def generate():
+	# 	x = 0
+    #
+	# 	while x <= 100:
+	# 		yield "data:" + str(x) + "\n\n"
+	# 		x = x + 10
+	# 		time.sleep(0.5)
+    #
+    # return Response(generate(), mimetype= 'text/event-stream')
 
 
 @app.errorhandler(500)
@@ -168,4 +212,4 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 if __name__ == '__main__':
-   app.run()
+   socketio.run(app)

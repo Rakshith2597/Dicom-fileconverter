@@ -15,7 +15,7 @@
   <!--ADD ALL JAVASCRIPTS ##BUNDLED INTO ONE FILE-->
 
   {% assets "main_js" %}
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
   <script type="text/javascript" src="{{ASSET_URL}}" > </script>
   <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="q35o4p01rr1byor"></script>
 
@@ -87,6 +87,9 @@
 
              </div>
               <div class="card-action">
+                <div id='change'>
+
+                </div>
 
 
 
@@ -101,31 +104,31 @@
   </div>
 
   <script>
-  Button_Enable(){
-  $("#js-upload-submit").removeAttr('disabled');
-  $("#js-upload-submit").css({
-    "cursor": "pointer",
-    "box-shadow": "1px 0px 6px #333"
-  });}
+$(document).ready(function(){
+
+  var socket = io.connect('http://127.0.0.1:5000');
+
+
+  socket.on('message',function(msg){
+    var criteria=msg
+
+    //document.getElementById("change").innerHTML = "<i>"+msg+"</i>";
+    $("#change").append('<i>'+msg+'</i>');
+    console.log('Recieved msg');
+
+      $("#js-upload-submit").removeAttr('disabled')
+      $("#js-upload-submit").css({
+        "cursor": "pointer",
+        "box-shadow": "1px 0px 6px #333"
+      });
+
+
+  });
+});
+
   </script>
-<script>
-$.ajax({
-          url: '/uploader',
-          type: 'GET',
-          dataType: 'json',
-          data: {key: 'success'},
-          success:function(json)
-          {
-                        $("#js-upload-submit").removeAttr('disabled');
-                        $("#js-upload-submit").css({
-                          "cursor": "pointer",
-                          "box-shadow": "1px 0px 6px #333"
-                        });
 
-          }
 
-        });
-</script> 
 
 
 
@@ -238,10 +241,13 @@ options = {
                 <p class="grey-text text-darken-4">
                   <a class="grey-text text-darken-4" href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm? Download our simple python script</a>
                 </p>
-                <button type="submit"  name="submit" class="btn waves-effect waves-light" id="js-upload-submit">
-                  <i class="fas fa-file-code fa-7x"> Download script</i>
+                <form action={{ url_for('script_download') }}>
+                  <button type="submit"  name="submit" class="btn waves-effect waves-light" id="js-upload-submit" >
+                    <i class="fas fa-file-code fa-7x"> Download script</i>
 
-                </button>
+                  </button>
+                </form>
+
               </div>
 
 
