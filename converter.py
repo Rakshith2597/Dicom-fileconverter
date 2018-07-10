@@ -29,6 +29,7 @@ global name
 name=''
 @app.route('/')
 def upl():
+
     return render_template('upload.html')
 
 @app.route('/uploader', methods=['GET' , 'POST'])
@@ -42,7 +43,8 @@ def uploader():
 
           url_dict = request.get_json()
 
-          socketio.send('Intializing===')
+          #socketio.send('Intializing===')
+          socketio.send('5')
           socketio.sleep(0)
 
 
@@ -76,7 +78,8 @@ def uploader():
 
           global name
           name=filename
-          socketio.send('====>FileRecived=====')
+          #socketio.send('====>FileRecived=====')
+          socketio.send('13')
           socketio.sleep(0)
 
 
@@ -97,7 +100,8 @@ def uploader():
                     )
 
         #Switching to send progress to Client
-                  socketio.send('====>Compressing=====')
+                  #socketio.send('====>Compressing=====')
+                  socketio.send('35')
                   socketio.sleep(0)
         #Back to Intial socket
 
@@ -124,9 +128,14 @@ def uploader():
               x={'key':'success'}
 
 
-              socketio.send('====>Compressed=====')
+              # socketio.send('====>Compressed=====')
+              socketio.send('80')
               socketio.sleep(0)
-              socketio.send('===>Click Download Button=====>')
+              #socketio.send('===>Click Download Button=====>')
+              socketio.send('100')
+              socketio.sleep(0)
+
+              socketio.send('Compressed 100')
               socketio.sleep(0)
 
 
