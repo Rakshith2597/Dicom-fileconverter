@@ -1,7 +1,7 @@
 import paramiko as pmk
 
 # DON'T CHANGE THIS
-SCRIPT_DIR = '/home/miriad1c/compression/'
+SCRIPT_DIR = '/home/miriad2a/compression/'
 
 def connect_to_server(credential_dict):
 	# connect to server using the given credentials
@@ -10,10 +10,10 @@ def connect_to_server(credential_dict):
 	#	'username': '<username>',
 	#	'password': '<password>'
 	# }
-	
+
 	client = pmk.SSHClient()
 	client.set_missing_host_key_policy(pmk.AutoAddPolicy())
-	
+
 	# create the session with server
 	try:
 		client.connect(
@@ -27,9 +27,9 @@ def connect_to_server(credential_dict):
 		print('authentication error .. possibly due to wrong credentials'); exit()
 	else:
 		print('connected to {0}@{1}'.format(credential_dict['username'], credential_dict['hostname']))
-	
+
 	return client
-	
+
 
 def copy_to_and_from(client, src_dcm_file, dest_dcm_file, credential_dict = None, to = True, end_conn_on_finish = False):
 	# it copies a local file named 'src_dcm_file' (on local system)
@@ -37,11 +37,11 @@ def copy_to_and_from(client, src_dcm_file, dest_dcm_file, credential_dict = None
 	# connect to server with 'credentials_dict'.
 	# set if it is TO or FROM (to = True/False).
 	# set 'end_conn_on_finish' to True if want to close the connection on completion
-	
+
 	# connect to server if not already connected
 	if credential_dict is not None:
 		client = connect_to_server(credential_dict)
-		
+
 	# get an SFTP object
 	if client.get_transport().is_active():
 		# copy the file to server
@@ -53,11 +53,11 @@ def copy_to_and_from(client, src_dcm_file, dest_dcm_file, credential_dict = None
 				print('copying {1} to {0}'.format(src_dcm_file, dest_dcm_file))
 				sftp.get(dest_dcm_file, src_dcm_file)
 				sftp.remove(dest_dcm_file)
-			
+
 			print('copying done')
 	else:
 		print('connection lost .. please retry'); exit()
-	
+
 	if not end_conn_on_finish:
 		return client
 	else:
@@ -67,12 +67,12 @@ def copy_to_and_from(client, src_dcm_file, dest_dcm_file, credential_dict = None
 
 def run_compression(client, dcm_file, credential_dict = None):
 	# run compression on compute server
-	
+
 	# if requested to work with new credectials
 	# instead of an already existing client obj
 	if credential_dict is not None:
 		client = connect_to_server(credential_dict)
-	
+
 	# checking connection status is necessary
 	if client.get_transport().is_active():
 		print('running encoder ..')
@@ -81,17 +81,17 @@ def run_compression(client, dcm_file, credential_dict = None):
 		exit_status = out.channel.recv_exit_status() # it's a blocking call :)
 		if exit_status != 0:
 			print('remote pmk.exec_command() returned non-zero'); exit()
-			
+
 		print('encoding done ..')
 
 if __name__ == '__main__':
 	import os
-	
+
 	# variables specific to my setup
 	src_fold = os.path.abspath('.')
 	dcm_file = '_dicom.dcm'
 	dest_fold = SCRIPT_DIR # <- don't change
-	
+
 	if os.path.exists(os.path.join(src_fold, dcm_file)):
 		client = copy_to_and_from(None,
 			credential_dict = {'hostname': '10.9.7.9','username': 'miriad1c','password': 'sipiitkgp'},
@@ -104,6 +104,6 @@ if __name__ == '__main__':
 			dest_dcm_file = os.path.join(dest_fold, dcm_file.split('.')[0] + '.czb'),
 			to = False,
 			end_conn_on_finish = True)
-		
+
 		if client is None:
 			print('connection ended')

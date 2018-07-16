@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
   {% assets "main_css" %}
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel=stylesheet type=text/css href="{{ASSET_URL}}">
     <link rel=stylesheet type=text/css href="static/progress.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
@@ -16,23 +17,29 @@
   <!--ADD ALL JAVASCRIPTS ##BUNDLED INTO ONE FILE-->
 
   {% assets "main_js" %}
+  <script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"> </script>
   <script type="text/javascript" src="{{ASSET_URL}}" > </script>
   <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="q35o4p01rr1byor"></script>
 <script src="static/api.js"> </script>
 <script src="https://www.google.com/jsapi?key=AIzaSyDTpfIEYydGLzzhKRrm41LaqFssZLiqsjU"></script>
 <script src="https://apis.google.com/js/client.js?onload=initPicker"></script>
+
 	<script src="static/filepicker.js"></script>
 
   {%endassets%}
 
 
 </head>
-<body class='blue-grey lighten-4'>
+<body class="grey lighten-3">
 
 <nav>
 <div class="nav-wrapper grey lighten-4">
-    <p class="blue-grey-text text-lighten-2">
+    <p class="blue-grey-text text-lighten-1">
 <i class="fas fa-file-archive fa-3x"> Compress it!</i>
 
 </p>
@@ -49,7 +56,7 @@
      <div  id="drop-zone">
        <div class="row">
          <div class="col s12 m6 l10">
-           <div class="card blue-grey darken-1">
+           <div class="card black">
              <div class="card-content white-text">
                <span class="card-title">
                  <i class="fas fa-file-medical fa-2x"> </i>
@@ -59,7 +66,8 @@
 
                  </div>
 
-               <button disabled type="submit"  name="submit" class="btn-floating halfway-fab waves-effect waves-light red" id="js-upload-submit" onclick="this.disabled=true;">
+               <button disabled type="submit"  name="submit" class="btn-floating halfway-fab waves-effect waves-light red" id="js-upload-submit" onclick="this.disabled=true;"
+                  title="Download">
                  <i class="fas fa-file-download"> </i>
 
                </button>
@@ -70,7 +78,7 @@
                <form class="dropzone dz-clickable" id="mydropzone" name='file' action="{{ url_for('uploader') }}" enctype = "multipart/form-data">
                <span>
 
-               <i id="auth" class="fab fa-dropbox " onclick="Dropbox.choose(options)" style="color:rgb(0,0,0)" onchange="Button_Enable()">Dropbox</i> </g>
+               <i id="auth" class="fab fa-dropbox " onclick="Dropbox.choose(options)" style="color:rgb(0,0,0)" >Dropbox</i> </g>
 
                </span>
 
@@ -93,6 +101,7 @@
              </div>
               <div class="card-action">
 
+
            </div>
          </div>
        </div>
@@ -102,19 +111,158 @@
 
   </div>
 
+  <div class="row">
+    <div class="col s12">
+      <div class="solidline">
+        <hr size="10" bold>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12 m6 l3">
+
+        <div class="row">
+          <div class="col s12">
+            <p class="z-depth-5">
+            <div class="card small teal lighten-5">
+              <div class="card-content teal lighten-5 black-text">
+                <span class="card-title">
+
+                  <i class="fas fa-lightbulb"> </i>How to Use
+
+                </span>
+                <div class="row">
+                  <div class="span12">
+                    <div class="solidline">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-body">
+
+                  <font size="3">
+                  Drag and Drop your dicom file from your local file system or
+                  add it directly from your Dropbox or Google Drive.</br>Wait till the progress bar reaches 100%.</br>
+                  Click the Download Button.
+                </br>
+                Done!
+</font>
+
+                </div>
+
+              </div>
+
+            </div></p>
+          </div>
+        </div>
+
+
+
+    </div>
+    <div class="col s12 m6 l3">
+      <div class="row">
+        <div class="col s12">
+          <div class="card small teal lighten-5">
+            <div class="card-content teal lighten-5 black-text">
+              <span class="card-title">
+              <i class="fas fa-desktop"> Platform Independent</i>
+              </span>
+              <div class="row">
+                <div class="span12">
+                  <div class="solidline">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <font size="3">
+                You use Mac,Windows or Linux? Its fine ours is a browser-based application!
+              </br>
+              *Some features may appear different on different browser(or version). But it compresses your file exactly the same way.
+</font>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m6 l3">
+      <div class="row">
+        <div class="col s12">
+          <div class="card small teal lighten-5">
+            <div class="card-content teal lighten-5 black-text">
+              <span class="card-title">
+                <i class="fas fa-check-circle"> </i> Ease of use
+              </span>
+              <div class="row">
+                <div class="span12">
+                  <div class="solidline">
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body ">
+                <font size="4">
+                1.Upload </br>
+                2.Wait </br>
+                3.Download </br>
+              </br>
+              Its that simple!
+
+</font>
+
+
+              </div>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m6 l3">
+      <div class="row">
+        <div class="col s12">
+          <div class="card small teal lighten-5">
+            <div class="card-content teal lighten-5 black-text">
+              <span class="card-title">
+                <i class="fas fa-lock"> You are safe</i>
+
+
+              </span>
+              <font size="3">
+              We believe privacy is a right and not a privilage.
+              Your files will be permanently deleted from our server once you click download.
+              No one has access to your files and privacy is 100% guaranteed.
+              </font>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script>
+
+  //FOR UPDATING THE PROGRESS
 $(document).ready(function(){
 
   var socket = io.connect('http://127.0.0.1:5000');
 
 
   socket.on('message',function(msg){
-    var criteria=msg
+
+
+
 
     document.getElementById("change").innerHTML = "<i>"+msg+"%</i>";
-
-    console.log('Recieved msg');
       $("#total").val(msg)
 
       $("#js-upload-submit").removeAttr('disabled')
@@ -132,26 +280,22 @@ $(document).ready(function(){
 
 
 
-	<script>
-
-	</script>
 
 
+<!-- <script>
+document.getElementById("js-upload-submit").addEventListener('click', this.disabled=true)
 
-
-</script>
-
-
+</script> -->
 
 </div>
 
-        <footer class="page-footer grey">
+        <footer class="page-footer black">
           <div class="container">
             <div class="row">
               <div class="col l6 s12">
 
-                <p class="grey-text text-darken-4">
-                  <a class="grey-text text-darken-4" href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm? Download our simple python script</a>
+                <p class="white-text ">
+                  <a class="white-text" href="{{ url_for('script_download') }}" > Wish to convert it back to .dcm? Download our simple python script</a>
                 </p>
                 <form action={{ url_for('script_download') }}>
                   <button type="submit"  name="submit" class="btn waves-effect waves-light" id="js-upload-submit" >
