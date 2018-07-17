@@ -1,35 +1,25 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <!--<meta http-equiv="refresh" content="22" > -->
+
 
   <!--ADD ALL CSS STYLE-SHEETS -->
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
   {% assets "main_css" %}
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel=stylesheet type=text/css href="{{ASSET_URL}}">
-    <link rel=stylesheet type=text/css href="static/progress.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel=stylesheet type=text/css href="{{ASSET_URL}}">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
   {%endassets%}
 
   <!--ADD ALL JAVASCRIPTS ##BUNDLED INTO ONE FILE-->
 
   {% assets "main_js" %}
-  <script
-			  src="https://code.jquery.com/jquery-3.3.1.min.js"
-			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-			  crossorigin="anonymous"></script>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"> </script>
-  <script type="text/javascript" src="{{ASSET_URL}}" > </script>
-  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="q35o4p01rr1byor"></script>
-<script src="static/api.js"> </script>
+<script type="text/javascript" src="{{ASSET_URL}}" > </script>
+<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="q35o4p01rr1byor"></script>
 <script src="https://www.google.com/jsapi?key=AIzaSyDTpfIEYydGLzzhKRrm41LaqFssZLiqsjU"></script>
 <script src="https://apis.google.com/js/client.js?onload=initPicker"></script>
-
-	<script src="static/filepicker.js"></script>
 
   {%endassets%}
 
@@ -39,7 +29,7 @@
 
 <nav>
 <div class="nav-wrapper grey lighten-4">
-    <p class="blue-grey-text text-lighten-1">
+<p class="blue-grey-text text-lighten-1">
 <i class="fas fa-file-archive fa-3x"> Compress it!</i>
 
 </p>
@@ -48,8 +38,10 @@
 </nav>
 
 <div class="row">
-   <!-- <div class="col s12 m4 l2"><h3>Compress it online</h3></div> -->
-   <div class="col s12"><p></p></div>
+
+   <div class="col s12"><p align="center" class="blue-grey-text text-darken-2">
+     KLIV's Medical Image Compression Express for Mammograms
+   </p></div>
    <div class="col s12 m4 l2"></div>
 
    <div class="col s12 m4 l10">
@@ -163,6 +155,7 @@
     <div class="col s12 m6 l3">
       <div class="row">
         <div class="col s12">
+          <p class="z-depth-5">
           <div class="card small teal lighten-5">
             <div class="card-content teal lighten-5 black-text">
               <span class="card-title">
@@ -177,21 +170,24 @@
 
               <div class="card-body">
                 <font size="3">
-                You use Mac,Windows or Linux? Its fine ours is a browser-based application!
+                You use Windows or Linux? Its fine ours is a browser-based application!
               </br>
               *Some features may appear different on different browser(or version). But it compresses your file exactly the same way.
-</font>
+            </font>
               </div>
 
             </div>
 
           </div>
+        </p>
         </div>
       </div>
     </div>
+
     <div class="col s12 m6 l3">
       <div class="row">
         <div class="col s12">
+          <p class="z-depth-5">
           <div class="card small teal lighten-5">
             <div class="card-content teal lighten-5 black-text">
               <span class="card-title">
@@ -212,21 +208,25 @@
               </br>
               Its that simple!
 
-</font>
+            </font>
 
 
               </div>
 
-</div>
+            </div>
 
 
           </div>
+        </p>
         </div>
       </div>
     </div>
+
+
     <div class="col s12 m6 l3">
       <div class="row">
         <div class="col s12">
+          <p class="z-depth-5">
           <div class="card small teal lighten-5">
             <div class="card-content teal lighten-5 black-text">
               <span class="card-title">
@@ -244,6 +244,7 @@
 
           </div>
         </div>
+      </p>
       </div>
     </div>
   </div>
@@ -278,14 +279,6 @@ $(document).ready(function(){
   </script>
 
 
-
-
-
-
-<!-- <script>
-document.getElementById("js-upload-submit").addEventListener('click', this.disabled=true)
-
-</script> -->
 
 </div>
 

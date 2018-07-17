@@ -29,11 +29,11 @@ def uploader():
 
           url_dict = request.get_json() #RECEIVIES FILE URL/DATA (DROPBOX/DRIVE) FROM CLIENT SIDE
 
-          socketio.send('5')
+          socketio.send('5') #Sending progress to client side(For Progress bar)
           socketio.sleep(0)
 
           if url_dict:
-              url=url_dict.get('link')
+              url=url_dict.get('link') #link is a json key here
 
               filename = url.split("/")[-1]
     #USUAL GET,WGET,URLLIB RESULTS IN META DATA LOSS(REASON:UNKNOWN) SO BYTES ARE WRITTEN DOWN
@@ -73,17 +73,17 @@ def uploader():
                     dest_dcm_file = os.path.join(dest_fold, dcm_file)
                     )
 
-        #Switching to send progress to Client
+
 
                   socketio.send('35')
                   socketio.sleep(0)
-        #Back to Intial socket
+
 
                   run_compression(client, dcm_file)
 
                   client = copy_to_and_from(client,
-                    src_dcm_file = os.path.join(src_fold, dcm_file.split('.')[0] + '.czb'),
-                    dest_dcm_file = os.path.join(dest_fold, dcm_file.split('.')[0] + '.czb'),
+                    src_dcm_file = os.path.join(src_fold, dcm_file.split('.')[0] + '.kmxm'),
+                    dest_dcm_file = os.path.join(dest_fold, dcm_file.split('.')[0] + '.kmxm'),
                     to = False,
                     end_conn_on_finish = True)
 
@@ -119,7 +119,7 @@ def uploader():
 @app.route('/downloader',methods=['GET' , 'POST'])
 
 def downloader():
-    conv_name=name[:-3]+'czb'
+    conv_name=name[:-3]+'kmxm'
 
     file_handle = open(app.config['UPLOADED_PATH']+'/'+conv_name, 'r')
 
@@ -133,15 +133,6 @@ def downloader():
         return response
 
     return send_file(file_handle, as_attachment='True',attachment_filename=conv_name)
-
-# @app.route('/saver',methods=['POST'])
-#
-# def saver():
-#     if request.method == 'POST':
-#         url = request.get_json()
-#         print url
-#     return '', 200
-
 
 @app.route('/script_download')
 

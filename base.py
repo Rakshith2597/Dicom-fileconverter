@@ -31,20 +31,16 @@ app.config.update(
     DROPZONE_MAX_FILE_SIZE=30,
     DROPZONE_ALLOWED_FILE_TYPE='.dcm',
     DROPZONE_MAX_FILES=1,
-    #
+
     SECRET_KEY = 'poilkjmnb',
-    # DROPBOX_KEY = 'q35o4p01rr1byor',
-    # DROPBOX_SECRET = 'u3qy0hch1usdy8t',
-    # DROPBOX_ACCESS_TYPE = 'dropbox'
+
 )
 
 
 
-js=Bundle('jquery.min.js','upla.js','dropzone.js','something.js','cornerstone.min.js',
-'cornerstoneMath.min.js','cornerstoneTools.min.js','dicomParser.min.js','cornerstoneWADOImageLoader.js',
-'uids.js','initializeWebWorkers.js',output='gen/main.js')
+js=Bundle('jquery.min.js','upla.js','dropzone.js','something.js','uids.js','filepicker.js','api.js',output='gen/main.js')
 
-css=Bundle('up.css','dropzone.css','bootstrap.min.css','cornerstone.min.css',output='gen/main.css')
+css=Bundle('up.css','dropzone.css','bootstrap.min.css','progress.css',output='gen/main.css')
 assets=Environment(app)
 assets.register('main_js',js)
 assets.register('main_css',css)
