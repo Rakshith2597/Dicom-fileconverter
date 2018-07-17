@@ -7,12 +7,12 @@ import pydicom
 from pydicom.dataset import Dataset, FileDataset
 import datetime, time
 from flask_dropzone import Dropzone
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 from PIL.Image import fromarray
 from flask_assets import Bundle,Environment
-import dropbox
+#import dropbox
 import requests
-from dropbox import *
+#from dropbox import *
 # from flask_dropbox import blueprint
 
 
