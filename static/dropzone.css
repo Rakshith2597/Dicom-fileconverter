@@ -172,7 +172,7 @@
 .dropzone {
   min-height: 150px;
   border: 2px solid rgba(0, 0, 0, 0.3);
-  background: white;
+  background: rgba(255,255,255,1.0);
   padding: 54px 54px; }
   .dropzone.dz-clickable {
     cursor: pointer; }
@@ -181,6 +181,7 @@
     .dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {
       cursor: pointer; }
   .dropzone.dz-started .dz-message {
+    color:rgba(255,255,255)
     display: none; }
   .dropzone.dz-drag-hover {
     border-style: solid; }

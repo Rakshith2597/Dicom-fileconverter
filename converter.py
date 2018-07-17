@@ -1,89 +1,138 @@
 from base import *
-from Model_Encoder import *
+#from Model_Encoder import *
+from flask_socketio import SocketIO,send
+from server import *
+import wget
+import paramiko
 
-###############################################################
-#LINK TO DATABASE (NOT YET USED) COULD BE USED IN FUTURE
-# app.config['SQLALCHEMY_DATABASE_URI']='sqlite://///home/rakshith/dicom_converter/Dicom-fileconverter/uploads/filestorage.db'
-# db=SQLAlchemy(app)
-#
-# class filecontents(db.Model):
-#     id=db.Column(db.Integer,primary_key=True)
-#     name=db.Column(db.String(300))
-#     data=db.column(db.LargeBinary)
-################################################################
+proxies = {
+      'http': 'http://172.16.2.30:5000',
+      'https': 'http://172.16.2.30:5000',
+    }
+
+socketio= SocketIO(app)
+
+
 
 global name
 name=''
 @app.route('/')
 def upl():
+
     return render_template('upload.html')
 
-#UPLOAD.HTML IS THE BASIC HOMEPAGE OF APP
-
-@app.route('/upload', methods=['GET','POST'])
-
-def upload():
-    if request.method == 'POST':
-        f = request.files.get('file')
-
-        lstfilesDCM=[]  #empty list(ext:COULD BE USED TO HANDLE MULTIPLE FILES)
-
-
-        filename=secure_filename(f.filename)
-
-        f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
-        global name
-        name=filename
-
-        f.close()
-
-        return redirect(url_for('preview'))
-
-
-
+#ROUTE WHERE COMPRESSION FUNCTION IS CALLED
 @app.route('/uploader', methods=['GET' , 'POST'])
 def uploader():
+
       if request.method == 'POST':
 
-          conv_name=name
+          url_dict = request.get_json() #RECEIVIES FILE URL/DATA (DROPBOX/DRIVE) FROM CLIENT SIDE
 
-          if ".dcm" in conv_name.lower():
-              encoder(conv_name) #COMPRESSION
+          socketio.send('5') #Sending progress to client side(For Progress bar)
+          socketio.sleep(0)
 
+          if url_dict:
+              url=url_dict.get('link') #link is a json key here
+
+              filename = url.split("/")[-1]
+    #USUAL GET,WGET,URLLIB RESULTS IN META DATA LOSS(REASON:UNKNOWN) SO BYTES ARE WRITTEN DOWN
+              r = requests.get(url)
+              with open('uploads/'+filename,'wb') as f:
+
+                  f.write(r.content)
+                  f.close()
+
+          else:
+              f = request.files.get('file')
+              filename=secure_filename(f.filename)
+              f.save(os.path.join(app.config['UPLOADED_PATH'], filename))
+              f.close()
+
+
+          lstfilesDCM=[]  #empty list(ext:COULD BE USED TO HANDLE MULTIPLE FILES)
+
+
+          global name
+          name=filename
+
+          socketio.send('13')
+          socketio.sleep(0)
+
+          if ".dcm" in filename.lower():
+              SCRIPT_DIR = '/home/miriad1c/compression/'
+
+              src_fold = os.path.abspath('/home/rakshith/dicom_converter/Dicom-fileconverter/uploads/')
+              dcm_file = filename
+              dest_fold = SCRIPT_DIR # <- don't change
+
+              if os.path.exists(os.path.join(src_fold, dcm_file)):
+                  client = copy_to_and_from(None,
+                    credential_dict = {'hostname': '10.9.7.9','username': 'miriad1c','password': 'sipiitkgp'},
+                    src_dcm_file = os.path.join(src_fold, dcm_file),
+                    dest_dcm_file = os.path.join(dest_fold, dcm_file)
+                    )
+
+
+
+                  socketio.send('35')
+                  socketio.sleep(0)
+
+
+                  run_compression(client, dcm_file)
+
+                  client = copy_to_and_from(client,
+                    src_dcm_file = os.path.join(src_fold, dcm_file.split('.')[0] + '.kmxm'),
+                    dest_dcm_file = os.path.join(dest_fold, dcm_file.split('.')[0] + '.kmxm'),
+                    to = False,
+                    end_conn_on_finish = True)
+
+                  if client is None:
+                      print('connection ended')
+
+     #THIS IS TO DELETE THE FILES AFTER ITS USE/DOWNLOADED
               @after_this_request
               def remove_file(response):
                   try:
-                      os.remove(app.config['UPLOADED_PATH']+'/'+conv_name)
-                      #file_handle.close()
+                      os.remove(app.config['UPLOADED_PATH']+'/'+filename)
+
                   except Exception as error:
                       app.logger.error("Error removing or closing downloaded file handle", error)
                   return response
 
-              return redirect(url_for('downloader'))
+
+              socketio.send('80')
+              socketio.sleep(0)
+
+              socketio.send('100')
+              socketio.sleep(0)
+
+              socketio.send('Compressed 100')
+              socketio.sleep(0)
+
+              return redirect(url_for('preview'))
 
           else:
               return render_template('upload.html')
 
 
-@app.route('/downloader')
+@app.route('/downloader',methods=['GET' , 'POST'])
 
 def downloader():
-    conv_name=name[:-3]+'czb'
+    conv_name=name[:-3]+'kmxm'
 
-    os.remove('/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png')
     file_handle = open(app.config['UPLOADED_PATH']+'/'+conv_name, 'r')
+
     @after_this_request
     def remove_file(response):
         try:
             os.remove(app.config['UPLOADED_PATH']+'/'+conv_name)
-            #file_handle.close()
+
         except Exception as error:
             app.logger.error("Error removing or closing downloaded file handle", error)
         return response
 
     return send_file(file_handle, as_attachment='True',attachment_filename=conv_name)
-
-
 
 @app.route('/script_download')
 
@@ -92,44 +141,15 @@ def script_download():
     return send_from_directory('/home/rakshith/dicom_converter/Dicom-fileconverter/downloadables','czb_to_dcm.tar.gz', as_attachment='True')
 
 
-#USED TO GENERATE PNG PREVIEW IMAGE AFTER UPLOADING
 @app.route('/preview',methods=['GET','POST'])
 def preview():
 
-
-    ds=pydicom.read_file('uploads/'+name)
-    arr=ds.pixel_array
-
-
-    max=np.amax(arr)
-
-    if max==4095:
-
-        arr = arr/(max+0.0)
-        arr=arr*255.0
-
-
-    im = fromarray(arr).convert("L")  ## Saving preview image
-    im.save('static/dicom.png')
-
-    return redirect(url_for('loop'))
-
-
-@app.route('/loop',methods=['GET','POST'])
-
-#BACK TO HOMEPAGE WITH PNG
-def loop():
-    full_filename = '/home/rakshith/dicom_converter/Dicom-fileconverter/static/dicom.png'
-    return render_template("upload.html", user_image = full_filename)
-
-
-
+    return render_template('upload.html')
 
 
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
-
 
 
 @app.errorhandler(500)
@@ -138,4 +158,4 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 if __name__ == '__main__':
-   app.run()
+   socketio.run(app)

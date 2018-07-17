@@ -100,7 +100,7 @@ def encoder(conv_name):
 	lstfilesDCM.append(conv_name) #append is not actually necessary
 	m=lstfilesDCM[0] #used list to create multiple files uploader later
 	name=m[:-4]
-	con_file=name+'.czb'
+	con_file=name+'.kmxm'
 
 
 	image=pydicom.read_file('uploads/'+lstfilesDCM[0])
@@ -147,14 +147,17 @@ def encoder(conv_name):
 	def write_czb(pdata, w_orig, h_orig, cbz_file_name):
 		stat=3
 		status=struct.pack('B',stat)
-		ident='CRAZY BITMAP    '
+		ident='KMXMV1          '
 		ide=ident.encode('ASCII')
+		source_ident='DICOM           '
+		source_ide=source_ident.encode('ASCII')
 		width=struct.pack('Q',w_orig)
 		height=struct.pack('Q',h_orig)
 		image_bit=8
 		bit=struct.pack('B',image_bit)
 		new_file=open('uploads/'+cbz_file_name, 'wb')
 		new_file.write(ide)
+		new_file.write(source_ide)
 		new_file.write(status)
 		new_file.write(height)
 		new_file.write(width)

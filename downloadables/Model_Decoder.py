@@ -14,7 +14,6 @@ import dicom, dicom.UID
 import pydicom
 from dicom.dataset import Dataset, FileDataset
 import matplotlib.pyplot as plt
-
 import cv2
 from PIL.Image import fromarray
 
@@ -101,22 +100,22 @@ def changer():
     net = torch.load('Train1_Dream_8.pt') #LOAD THE REQUIRED MODEL
     decoder = net.module.decoder
 
-    new_file=open('000135.czb','rb') #SPECIFY THE INPUT FILENAME
+    new_file=open('000135.kmxm','rb') #SPECIFY THE INPUT FILENAME
 
 
     filename='conv.dcm'  #SPECIFY THE OUTPUT FILE NAME
 
 #READING THE REQUIRED CHARACTERS
-    new_file.seek(17)
+    new_file.seek(33)
     rows=new_file.read(8)
     h=struct.unpack('Q',rows)[0]
-    new_file.seek(25)
+    new_file.seek(41)
     columns=new_file.read(8)
     w=struct.unpack('Q',columns)[0]
-    new_file.seek(33)
+    new_file.seek(49)
     bpp=new_file.read(1)
     b=struct.unpack('B',bpp)[0]
-    new_file.seek(34)
+    new_file.seek(50)
     img = new_file.read()
     #print w,h
 #CONVERTING TO THE VALUES WITH THE PADDING
@@ -143,7 +142,7 @@ def changer():
 
     imgfile = imgfile[int(w1/2):int(w1/2)+w,int(h1/2):int(h1/2)+h]
     #print "length of ",len(imgfile)
-	
+
 #SAVING PNG OF THE IMAGE (OPTIONAL)
     im = fromarray(imgfile).convert("L")  ## Saving preview image
     im.save('dicom.png')
