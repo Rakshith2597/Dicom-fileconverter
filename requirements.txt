@@ -13,6 +13,7 @@ Flask-Assets==0.12
 Flask-Dropzone==1.4.6
 Flask-SocketIO==3.0.1
 greenlet==0.4.13
+gdcm==2.4.0
 idna==2.7
 ipaddress==1.0.22
 itsdangerous==0.24
