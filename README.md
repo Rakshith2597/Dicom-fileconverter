@@ -1,6 +1,6 @@
 # Dicom-fileconverter
 
-Repository contains the codes to convert dicom files to a custom file format developed by researchers at KLIV, IIT Kharagpur. This was webportal was developed as part of my internship in the insitution.
+Repository contains the codes to convert dicom files to a custom file format developed by researchers at KLIV, IIT Kharagpur. This webportal was developed as part of my internship in the insitution.
 
 Absrtact:-
 
