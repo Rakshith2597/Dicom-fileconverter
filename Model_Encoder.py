@@ -17,79 +17,10 @@ from bitstring import Bits
 # from base import *
 
 
-class ClipReLU1(Function):
-
-	@staticmethod
-	def forward(self, input):
-	    self.save_for_backward(input)
-	    return torch.round((255.0)*input.clamp(min=0,max=1))/(255.0)
-
-	@staticmethod
-	def backward(self, grad_output):
-	    input, = self.saved_tensors
-	    grad_input = grad_output.clone()
-	    grad_input[input < 0] = 0
-	    grad_input[input > 1] = 0
-	    return grad_input
-
-class ClipReLU2(Function):
-
-	@staticmethod
-	def forward(self, input):
-	    self.save_for_backward(input)
-	    return torch.round(4095.0*input.clamp(min=0,max=1))/4095.0
-
-	@staticmethod
-	def backward(self, grad_output):
-	    input, = self.saved_tensors
-	    grad_input = grad_output.clone()
-	    grad_input[input < 0] = 0
-	    grad_input[input > 1] = 0
-	    return grad_input
-
-class autoencoder(nn.Module):
-	def __init__(self):
-	    super(autoencoder, self).__init__()
-	    self.encoder = nn.Sequential(
-		nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, stride=2, padding=1),
-		nn.ELU(),
-
-		nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=2, padding=1),
-		nn.ELU(),
-
-		nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=2, padding=1),
-		nn.ELU(),
-
-		nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=2, padding=1),
-		nn.ELU(),
-
-		nn.Conv2d(in_channels=64, out_channels=8, kernel_size=1, stride=1, padding=0))
-
-	    self.decoder = nn.Sequential(
-		nn.Conv2d(in_channels=8, out_channels=64, kernel_size=1, stride=1, padding=0),
-		nn.ELU(),
-
-		nn.Conv2d(in_channels=64, out_channels=64*4, kernel_size=3, stride=1, padding=1),
-		nn.ELU(),
-		nn.PixelShuffle(2),
-
-		nn.Conv2d(in_channels=64, out_channels=64*4, kernel_size=3, stride=1, padding=1),
-		nn.ELU(),
-		nn.PixelShuffle(2),
-
-		nn.Conv2d(in_channels=64, out_channels=64*4, kernel_size=3, stride=1, padding=1),
-		nn.ELU(),
-		nn.PixelShuffle(2),
-
-		nn.Conv2d(in_channels=64, out_channels=4, kernel_size=3, stride=1, padding=1),
-		nn.PixelShuffle(2))
-
-	def forward(self, x):
-	    x = self.encoder(x)
-	    x = ClipReLU1.apply(x)
-	    x = self.decoder(x)
-	    x = ClipReLU2.apply(x)
-	    return x
+#######################################################################################################
+#                               NETWORK ARCHITECTURE REMOVED DUE TO Copyright                         #
+#                                                                                                     #
+#######################################################################################################
 
 def encoder(conv_name):
 	net = torch.load('Train1_Dream_8.pt')
