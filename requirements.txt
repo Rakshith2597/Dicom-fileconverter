@@ -7,7 +7,7 @@ click==6.7
 cryptography==2.3
 dicom==0.9.9.post1
 enum34==1.1.6
-eventlet==0.23.0
+eventlet==0.31.0
 Flask==1.0.2
 Flask-Assets==0.12
 Flask-Dropzone==1.4.6
